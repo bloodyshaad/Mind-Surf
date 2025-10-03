@@ -15,24 +15,58 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '../views'));
 
 // Session configuration with MongoDB store
-app.use(session({
+const sessionConfig = {
   secret: process.env.SESSION_SECRET || 'your-secret-key-change-in-production',
-  resave: false,
-  saveUninitialized: false,
-  store: MongoStore.create({
-    mongoUrl: process.env.MONGODB_URI,
-    touchAfter: 24 * 3600, // lazy session update
-    crypto: {
-      secret: process.env.SESSION_SECRET || 'your-secret-key-change-in-production'
-    }
-  }),
+  resave: true,
+  saveUninitialized: true,
   cookie: { 
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
-    secure: process.env.NODE_ENV === 'production',
+    secure: false, // Set to false for now to test
     httpOnly: true,
-    sameSite: 'lax'
+    sameSite: 'lax',
+    path: '/'
+  },
+  name: 'sessionId'
+};
+
+// Add MongoDB store if MONGODB_URI is available
+if (process.env.MONGODB_URI) {
+  try {
+    // Ensure database name is in the connection string for session store
+    let mongoUri = process.env.MONGODB_URI;
+    if (!mongoUri.includes('mongodb.net/') || mongoUri.match(/mongodb\.net\/\?/)) {
+      mongoUri = mongoUri.replace('mongodb.net/?', 'mongodb.net/mindsurf?');
+      if (!mongoUri.includes('mongodb.net/mindsurf')) {
+        mongoUri = mongoUri.replace('mongodb.net/', 'mongodb.net/mindsurf/');
+      }
+    }
+    
+    sessionConfig.store = MongoStore.create({
+      mongoUrl: mongoUri,
+      dbName: 'mindsurf',
+      collectionName: 'sessions',
+      ttl: 24 * 60 * 60, // 1 day
+      autoRemove: 'native',
+      touchAfter: 0, // Always update session
+      crypto: {
+        secret: process.env.SESSION_SECRET || 'your-secret-key-change-in-production'
+      },
+      mongoOptions: {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        serverSelectionTimeoutMS: 10000
+      }
+    });
+    console.log('Using MongoDB session store');
+  } catch (error) {
+    console.error('Failed to create MongoDB session store:', error.message);
+    console.log('Falling back to MemoryStore (not recommended for production)');
   }
-}));
+} else {
+  console.warn('MONGODB_URI not set, using MemoryStore (not recommended for production)');
+}
+
+app.use(session(sessionConfig));
 
 // MongoDB Connection
 let isConnected = false;
@@ -47,15 +81,24 @@ const connectDB = async () => {
   }
   
   try {
-    await mongoose.connect(process.env.MONGODB_URI, {
+    // Ensure database name is in the connection string
+    let mongoUri = process.env.MONGODB_URI;
+    if (!mongoUri.includes('mongodb.net/') || mongoUri.match(/mongodb\.net\/\?/)) {
+      // Add default database name if missing
+      mongoUri = mongoUri.replace('mongodb.net/?', 'mongodb.net/mindsurf?');
+      mongoUri = mongoUri.replace('mongodb.net/', 'mongodb.net/mindsurf/');
+    }
+    
+    await mongoose.connect(mongoUri, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 5000
+      serverSelectionTimeoutMS: 10000,
+      socketTimeoutMS: 45000,
     });
     isConnected = true;
     console.log('Connected to MongoDB Atlas');
   } catch (err) {
-    console.error('MongoDB connection error:', err);
+    console.error('MongoDB connection error:', err.message);
     isConnected = false;
     throw err;
   }
@@ -172,17 +215,28 @@ app.post('/login', async (req, res) => {
       return res.render('login', { error: 'Invalid username or password' });
     }
 
+    // Set session data
     req.session.userId = user._id;
     req.session.username = user.username;
     req.session.isAdmin = user.isAdmin;
 
-    if (user.isAdmin) {
-      res.redirect('/admin');
-    } else {
-      res.redirect('/');
-    }
+    // Explicitly save session before redirect
+    req.session.save((err) => {
+      if (err) {
+        console.error('Session save error:', err);
+        return res.render('login', { error: 'Login failed. Please try again.' });
+      }
+      
+      console.log('Session saved successfully:', req.session.userId);
+      
+      if (user.isAdmin) {
+        res.redirect('/admin');
+      } else {
+        res.redirect('/');
+      }
+    });
   } catch (error) {
-    console.error(error);
+    console.error('Login error:', error);
     res.render('login', { error: 'Login failed. Please try again.' });
   }
 });

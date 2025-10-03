@@ -29,19 +29,26 @@ app.use(session({
 let isConnected = false;
 
 const connectDB = async () => {
-  if (isConnected) {
+  if (isConnected && mongoose.connection.readyState === 1) {
     return;
+  }
+  
+  if (!process.env.MONGODB_URI) {
+    throw new Error('MONGODB_URI environment variable is not set');
   }
   
   try {
     await mongoose.connect(process.env.MONGODB_URI, {
       useNewUrlParser: true,
-      useUnifiedTopology: true
+      useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 5000
     });
     isConnected = true;
     console.log('Connected to MongoDB Atlas');
   } catch (err) {
     console.error('MongoDB connection error:', err);
+    isConnected = false;
+    throw err;
   }
 };
 
@@ -108,9 +115,14 @@ app.get('/register', (req, res) => {
 });
 
 app.post('/register', async (req, res) => {
-  await connectDB();
   try {
+    await connectDB();
+    
     const { username, email, password, confirmPassword } = req.body;
+
+    if (!username || !email || !password || !confirmPassword) {
+      return res.render('register', { error: 'All fields are required' });
+    }
 
     if (password !== confirmPassword) {
       return res.render('register', { error: 'Passwords do not match' });
@@ -131,8 +143,8 @@ app.post('/register', async (req, res) => {
     await user.save();
     res.redirect('/login');
   } catch (error) {
-    console.error(error);
-    res.render('register', { error: 'Registration failed. Please try again.' });
+    console.error('Registration error:', error);
+    res.render('register', { error: `Registration failed: ${error.message}` });
   }
 });
 

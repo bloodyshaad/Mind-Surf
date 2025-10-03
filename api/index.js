@@ -45,7 +45,12 @@ if (mongoUri) {
       ttl: 24 * 60 * 60, // 1 day
       autoRemove: 'native',
       touchAfter: 0, // Always update
-      stringify: false
+      stringify: false,
+      mongoOptions: {
+        serverSelectionTimeoutMS: 5000, // Reduce timeout
+        socketTimeoutMS: 10000,
+        connectTimeoutMS: 5000
+      }
     });
     
     store.on('create', (sid) => console.log('✓ Session created:', sid));
@@ -65,17 +70,20 @@ if (mongoUri) {
 }
 
 // Session middleware
+const isProduction = process.env.NODE_ENV === 'production' || process.env.VERCEL === '1';
+
 app.use(session({
   secret: process.env.SESSION_SECRET || 'fallback-secret-change-this',
-  resave: true,
+  resave: false,
   saveUninitialized: false,
   rolling: true,
   store: store,
+  proxy: true, // Trust the reverse proxy
   cookie: {
     maxAge: 1000 * 60 * 60 * 24, // 24 hours
     httpOnly: true,
-    secure: false,
-    sameSite: 'lax',
+    secure: isProduction, // Use secure cookies in production (HTTPS)
+    sameSite: 'lax', // 'lax' works for same-site requests
     path: '/'
   },
   name: 'sessionId'
@@ -219,6 +227,7 @@ app.post('/login', async (req, res) => {
     await connectDB();
     
     const { username, password } = req.body;
+    console.log('Login attempt for username:', username);
 
     if (!username || !password) {
       return res.render('login', { error: 'Username and password are required' });
@@ -226,40 +235,45 @@ app.post('/login', async (req, res) => {
 
     const user = await User.findOne({ username });
     if (!user) {
+      console.log('User not found:', username);
       return res.render('login', { error: 'Invalid username or password' });
     }
 
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) {
+      console.log('Invalid password for user:', username);
       return res.render('login', { error: 'Invalid username or password' });
     }
 
-    // Regenerate session to prevent fixation
-    req.session.regenerate((err) => {
+    console.log('Credentials valid, setting up session for:', username);
+    console.log('Session before login:', req.session);
+
+    // Set session data directly (skip regenerate for now to test)
+    req.session.userId = user._id.toString();
+    req.session.username = user.username;
+    req.session.isAdmin = user.isAdmin;
+
+    console.log('Session after setting data:', req.session);
+
+    // Save session explicitly
+    req.session.save((err) => {
       if (err) {
-        console.error('Session regeneration error:', err);
+        console.error('❌ Session save error:', err);
         return res.render('login', { error: 'Login failed. Please try again.' });
       }
 
-      // Set session data
-      req.session.userId = user._id.toString();
-      req.session.username = user.username;
-      req.session.isAdmin = user.isAdmin;
-
-      // Save session explicitly
-      req.session.save((err) => {
-        if (err) {
-          console.error('Session save error:', err);
-          return res.render('login', { error: 'Login failed. Please try again.' });
-        }
-
-        console.log('User logged in:', username, 'Session ID:', req.sessionID);
-        
-        if (user.isAdmin) {
-          return res.redirect('/admin');
-        }
-        return res.redirect('/');
+      console.log('✅ Session saved successfully!');
+      console.log('Session ID:', req.sessionID);
+      console.log('Session data:', {
+        userId: req.session.userId,
+        username: req.session.username,
+        isAdmin: req.session.isAdmin
       });
+      
+      if (user.isAdmin) {
+        return res.redirect('/admin');
+      }
+      return res.redirect('/');
     });
   } catch (error) {
     console.error('Login error:', error);

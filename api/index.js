@@ -14,59 +14,33 @@ app.use(express.static(path.join(__dirname, '../public')));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '../views'));
 
-// Session configuration with MongoDB store
-const sessionConfig = {
-  secret: process.env.SESSION_SECRET || 'your-secret-key-change-in-production',
-  resave: true,
-  saveUninitialized: true,
-  cookie: { 
-    maxAge: 24 * 60 * 60 * 1000, // 24 hours
-    secure: false, // Set to false for now to test
-    httpOnly: true,
-    sameSite: 'lax',
-    path: '/'
-  },
-  name: 'sessionId'
-};
-
-// Add MongoDB store if MONGODB_URI is available
-if (process.env.MONGODB_URI) {
-  try {
-    // Ensure database name is in the connection string for session store
-    let mongoUri = process.env.MONGODB_URI;
-    if (!mongoUri.includes('mongodb.net/') || mongoUri.match(/mongodb\.net\/\?/)) {
-      mongoUri = mongoUri.replace('mongodb.net/?', 'mongodb.net/mindsurf?');
-      if (!mongoUri.includes('mongodb.net/mindsurf')) {
-        mongoUri = mongoUri.replace('mongodb.net/', 'mongodb.net/mindsurf/');
-      }
-    }
-    
-    sessionConfig.store = MongoStore.create({
-      mongoUrl: mongoUri,
-      dbName: 'mindsurf',
-      collectionName: 'sessions',
-      ttl: 24 * 60 * 60, // 1 day
-      autoRemove: 'native',
-      touchAfter: 0, // Always update session
-      crypto: {
-        secret: process.env.SESSION_SECRET || 'your-secret-key-change-in-production'
-      },
-      mongoOptions: {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        serverSelectionTimeoutMS: 10000
-      }
-    });
-    console.log('Using MongoDB session store');
-  } catch (error) {
-    console.error('Failed to create MongoDB session store:', error.message);
-    console.log('Falling back to MemoryStore (not recommended for production)');
+// Prepare MongoDB URI for session store
+let sessionMongoUri = process.env.MONGODB_URI;
+if (sessionMongoUri) {
+  // Check if database name is missing (ends with / or /?)
+  if (sessionMongoUri.match(/mongodb\.net\/\?/)) {
+    // Replace /?  with /mindsurf?
+    sessionMongoUri = sessionMongoUri.replace('mongodb.net/?', 'mongodb.net/mindsurf?');
   }
-} else {
-  console.warn('MONGODB_URI not set, using MemoryStore (not recommended for production)');
 }
 
-app.use(session(sessionConfig));
+// Session configuration
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'your-secret-key-change-in-production',
+  resave: false,
+  saveUninitialized: false,
+  store: sessionMongoUri ? MongoStore.create({
+    mongoUrl: sessionMongoUri,
+    ttl: 24 * 60 * 60,
+    touchAfter: 24 * 3600
+  }) : undefined,
+  cookie: { 
+    maxAge: 24 * 60 * 60 * 1000,
+    secure: false,
+    httpOnly: true,
+    sameSite: 'lax'
+  }
+}));
 
 // MongoDB Connection
 let isConnected = false;
@@ -83,10 +57,10 @@ const connectDB = async () => {
   try {
     // Ensure database name is in the connection string
     let mongoUri = process.env.MONGODB_URI;
-    if (!mongoUri.includes('mongodb.net/') || mongoUri.match(/mongodb\.net\/\?/)) {
-      // Add default database name if missing
+    
+    // Only fix if database name is missing (ends with /?)
+    if (mongoUri.match(/mongodb\.net\/\?/)) {
       mongoUri = mongoUri.replace('mongodb.net/?', 'mongodb.net/mindsurf?');
-      mongoUri = mongoUri.replace('mongodb.net/', 'mongodb.net/mindsurf/');
     }
     
     await mongoose.connect(mongoUri, {

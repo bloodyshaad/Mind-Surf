@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindSurf - Ride the Waves of Teen Stress</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <i class="fas fa-brain"></i>
+                <span>MindSurf</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link active">Home</a></li>
+                <li><a href="#about" class="nav-link">About Stress</a></li>
+                <li><a href="#quiz" class="nav-link">Take Quiz</a></li>
+                <li><a href="#tips" class="nav-link">Beat Stress</a></li>
+                <% if (user) { %>
+                    <li><a href="/logout" class="nav-link btn-logout">Logout</a></li>
+                    <% if (user.isAdmin) { %>
+                        <li><a href="/admin" class="nav-link btn-admin">Admin</a></li>
+                    <% } %>
+                <% } else { %>
+                    <li><a href="/login" class="nav-link btn-login">Login</a></li>
+                <% } %>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">
+                    <span class="wave-text">Ride the Waves</span>
+                    <span class="gradient-text">of Teen Stress</span>
+                </h1>
+                <p class="hero-description">
+                    Being a teenager is like surfing through a storm of emotions, expectations, and changes. 
+                    Stress is that powerful wave that can either knock you down or teach you to balance. 
+                    At MindSurf, we understand that teen stress isn't just about homework or exams—it's about 
+                    navigating friendships, social media pressure, family expectations, and discovering who you are. 
+                    You're not alone in this journey, and learning to manage stress now will give you superpowers 
+                    for life. Let's dive in and learn how to surf these waves together!
+                </p>
+                <div class="hero-buttons">
+                    <a href="#quiz" class="btn btn-primary">
+                        <i class="fas fa-clipboard-list"></i> Take the Quiz
+                    </a>
+                    <a href="#about" class="btn btn-secondary">
+                        <i class="fas fa-book-open"></i> Learn More
+                    </a>
+                </div>
+            </div>
+            <div class="hero-illustration">
+                <div class="floating-icon icon-1"><i class="fas fa-brain"></i></div>
+                <div class="floating-icon icon-2"><i class="fas fa-heart"></i></div>
+                <div class="floating-icon icon-3"><i class="fas fa-smile"></i></div>
+                <div class="floating-icon icon-4"><i class="fas fa-sun"></i></div>
+            </div>
+        </div>
+        <div class="wave-divider">
+            <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"></path>
+            </svg>
+        </div>
+    </section>
+
+    <!-- About Stress Section -->
+    <section id="about" class="about-section">
+        <div class="container">
+            <h2 class="section-title">
+                <i class="fas fa-lightbulb"></i>
+                How Stress Affects Us
+            </h2>
+            
+            <div class="stress-grid">
+                <div class="stress-card" data-aos="fade-up">
+                    <div class="stress-icon brain-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>Mental Effects</h3>
+                    <p>Stress floods your brain with cortisol, making it harder to concentrate, remember things, and make decisions. You might feel overwhelmed, anxious, or like your thoughts are racing. It's like having too many browser tabs open in your mind!</p>
+                    <div class="stress-symptoms">
+                        <span class="symptom">Difficulty focusing</span>
+                        <span class="symptom">Racing thoughts</span>
+                        <span class="symptom">Memory problems</span>
+                        <span class="symptom">Constant worry</span>
+                    </div>
+                </div>
+
+                <div class="stress-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="stress-icon body-icon">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <h3>Physical Effects</h3>
+                    <p>Your body goes into "fight or flight" mode. Your heart races, muscles tense up, and you might get headaches or stomach aches. Chronic stress can weaken your immune system, making you more likely to get sick.</p>
+                    <div class="stress-symptoms">
+                        <span class="symptom">Headaches</span>
+                        <span class="symptom">Muscle tension</span>
+                        <span class="symptom">Fatigue</span>
+                        <span class="symptom">Sleep problems</span>
+                    </div>
+                </div>
+
+                <div class="stress-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="stress-icon emotion-icon">
+                        <i class="fas fa-sad-tear"></i>
+                    </div>
+                    <h3>Emotional Effects</h3>
+                    <p>Stress can make you feel irritable, moody, or overwhelmed. You might snap at friends or family, feel like crying for no reason, or lose interest in things you usually enjoy. It's like your emotions are on a rollercoaster.</p>
+                    <div class="stress-symptoms">
+                        <span class="symptom">Mood swings</span>
+                        <span class="symptom">Irritability</span>
+                        <span class="symptom">Feeling overwhelmed</span>
+                        <span class="symptom">Low motivation</span>
+                    </div>
+                </div>
+
+                <div class="stress-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="stress-icon social-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Social Effects</h3>
+                    <p>When stressed, you might withdraw from friends, avoid social situations, or have conflicts with people you care about. Stress can make you feel isolated and misunderstood, creating a cycle that's hard to break.</p>
+                    <div class="stress-symptoms">
+                        <span class="symptom">Social withdrawal</span>
+                        <span class="symptom">Conflicts</span>
+                        <span class="symptom">Isolation</span>
+                        <span class="symptom">Communication issues</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stress-cycle">
+                <h3>The Stress Cycle</h3>
+                <div class="cycle-diagram">
+                    <div class="cycle-step">
+                        <div class="step-number">1</div>
+                        <p>Stressor appears (exam, conflict, pressure)</p>
+                    </div>
+                    <div class="cycle-arrow">→</div>
+                    <div class="cycle-step">
+                        <div class="step-number">2</div>
+                        <p>Body releases stress hormones</p>
+                    </div>
+                    <div class="cycle-arrow">→</div>
+                    <div class="cycle-step">
+                        <div class="step-number">3</div>
+                        <p>Physical & mental symptoms appear</p>
+                    </div>
+                    <div class="cycle-arrow">→</div>
+                    <div class="cycle-step">
+                        <div class="step-number">4</div>
+                        <p>Performance & wellbeing affected</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quiz Section -->
+    <section id="quiz" class="quiz-section">
+        <div class="container">
+            <h2 class="section-title">
+                <i class="fas fa-clipboard-list"></i>
+                Stress Quiz: Public Performance Edition
+            </h2>
+            <p class="section-subtitle">Discover your stress triggers when performing in public</p>
+
+            <% if (user) { %>
+                <div class="quiz-container">
+                    <form id="quizForm">
+                        <div class="quiz-question" data-aos="fade-up">
+                            <h3><span class="question-number">1.</span> How often do you feel nervous before speaking in front of others?</h3>
+                            <div class="quiz-options">
+                                <label class="quiz-option">
+                                    <input type="radio" name="q1" value="never" required>
+                                    <span class="option-text">
+                                        <i class="fas fa-smile"></i>
+                                        Never - I'm totally comfortable
+                                    </span>
+                                </label>
+                                <label class="quiz-option">
+                                    <input type="radio" name="q1" value="sometimes" required>
+                                    <span class="option-text">
+                                        <i class="fas fa-meh"></i>
+                                        Sometimes - Depends on the situation
+                                    </span>
+                                </label>
+                                <label class="quiz-option">
+                                    <input type="radio" name="q1" value="often" required>
+                                    <span class="option-text">
+                                        <i class="fas fa-frown"></i>
+                                        Often - I get nervous most times
+                                    </span>
+                                </label>
+                                <label class="quiz-option">
+                                    <input type="radio" name="q1" value="always" required>
+                                    <span class="option-text">
+                                        <i class="fas fa-dizzy"></i>
+                                        Always - It terrifies me
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="quiz-question" data-aos="fade-up" data-aos-delay="100">
+                            <h3><span class="question-number">2.</span> Do you experience physical symptoms (sweating, shaking) when performing?</h3>
+                            <div class="quiz-options">
+                                <label class="quiz-option">
+                                    <input type="radio" name="q2" value="never" required>
+                                    <span class="option-text">
+                                        <i class="fas fa-smile"></i>
+                                        Never - I stay calm and collected
+                                    </span>
+                                </label>
+                                <label class="quiz-option">
+                                    <input type="radio" name="q2" value="sometimes" required>
+                                    <span class="option-text">
+                                        <i class="fas fa-meh"></i>
+                                        Sometimes - Minor symptoms
+                                    </span>
+                                </label>
+                                <label class="quiz-option">
+                                    <input type="radio" name="q2" value="often" required>
+                                    <span class="option-text">
+                                        <i class="fas fa-frown"></i>
+                                        Often - Noticeable symptoms
+                                    </span>
+                                </label>
+                                <label class="quiz-option">
+                                    <input type="radio" name="q2" value="always" required>
+                                    <span class="option-text">
+                                        <i class="fas fa-dizzy"></i>
+                                        Always - Severe physical reactions
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="quiz-question" data-aos="fade-up" data-aos-delay="200">
+                            <h3><span class="question-number">3.</span> How often do you worry about being judged by others?</h3>
+                            <div class="quiz-options">
+                                <label class="quiz-option">
+                                    <input type="radio" name="q3" value="never" required>
+                                    <span class="option-text">
+                                        <i class="fas fa-smile"></i>
+                                        Never - I don't care what others think
+                                    </span>
+                                </label>
+                                <label class="quiz-option">
+                                    <input type="radio" name="q3" value="sometimes" required>
+                                    <span class="option-text">
+                                        <i class="fas fa-meh"></i>
+                                        Sometimes - Occasional concerns
+                                    </span>
+                                </label>
+                                <label class="quiz-option">
+                                    <input type="radio" name="q3" value="often" required>
+                                    <span class="option-text">
+                                        <i class="fas fa-frown"></i>
+                                        Often - It's on my mind a lot
+                                    </span>
+                                </label>
+                                <label class="quiz-option">
+                                    <input type="radio" name="q3" value="always" required>
+                                    <span class="option-text">
+                                        <i class="fas fa-dizzy"></i>
+                                        Always - I'm constantly worried
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="quiz-question" data-aos="fade-up" data-aos-delay="300">
+                            <h3><span class="question-number">4.</span> Do you avoid situations where you have to perform in public?</h3>
+                            <div class="quiz-options">
+                                <label class="quiz-option">
+                                    <input type="radio" name="q4" value="never" required>
+                                    <span class="option-text">
+                                        <i class="fas fa-smile"></i>
+                                        Never - I embrace opportunities
+                                    </span>
+                                </label>
+                                <label class="quiz-option">
+                                    <input type="radio" name="q4" value="sometimes" required>
+                                    <span class="option-text">
+                                        <i class="fas fa-meh"></i>
+                                        Sometimes - If I can avoid it easily
+                                    </span>
+                                </label>
+                                <label class="quiz-option">
+                                    <input type="radio" name="q4" value="often" required>
+                                    <span class="option-text">
+                                        <i class="fas fa-frown"></i>
+                                        Often - I try to avoid them
+                                    </span>
+                                </label>
+                                <label class="quiz-option">
+                                    <input type="radio" name="q4" value="always" required>
+                                    <span class="option-text">
+                                        <i class="fas fa-dizzy"></i>
+                                        Always - I avoid them at all costs
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-submit">
+                            <i class="fas fa-check-circle"></i> Submit Quiz
+                        </button>
+                    </form>
+
+                    <div id="quizResult" class="quiz-result" style="display: none;">
+                        <div class="result-content">
+                            <i class="fas fa-chart-line result-icon"></i>
+                            <h3>Your Stress Level: <span id="stressLevel"></span></h3>
+                            <p id="stressMessage"></p>
+                            <a href="#tips" class="btn btn-secondary">View Stress-Beating Tips</a>
+                        </div>
+                    </div>
+                </div>
+            <% } else { %>
+                <div class="login-prompt">
+                    <i class="fas fa-lock"></i>
+                    <h3>Please log in to take the quiz</h3>
+                    <p>Create an account or log in to access the stress quiz and track your progress</p>
+                    <a href="/login" class="btn btn-primary">Login / Register</a>
+                </div>
+            <% } %>
+        </div>
+    </section>
+
+    <!-- Tips Section -->
+    <section id="tips" class="tips-section">
+        <div class="container">
+            <h2 class="section-title">
+                <i class="fas fa-star"></i>
+                Suggestions for Beating Stress
+            </h2>
+            <p class="section-subtitle">Practical strategies to help you manage and overcome stress</p>
+
+            <div class="tips-grid">
+                <div class="tip-card" data-aos="zoom-in">
+                    <div class="tip-icon">
+                        <i class="fas fa-wind"></i>
+                    </div>
+                    <h3>Breathe & Relax</h3>
+                    <p>Try the 4-7-8 technique: Breathe in for 4 seconds, hold for 7, exhale for 8. Deep breathing activates your parasympathetic nervous system, instantly calming your body and mind.</p>
+                    <div class="tip-action">
+                        <button class="btn-small" onclick="startBreathingExercise()">
+                            <i class="fas fa-play"></i> Try Now
+                        </button>
+                    </div>
+                </div>
+
+                <div class="tip-card" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="tip-icon">
+                        <i class="fas fa-running"></i>
+                    </div>
+                    <h3>Move Your Body</h3>
+                    <p>Exercise releases endorphins—your brain's natural mood boosters. Even a 15-minute walk, dance session, or quick workout can dramatically reduce stress levels and improve your mood.</p>
+                    <ul class="tip-list">
+                        <li>Go for a walk or run</li>
+                        <li>Dance to your favorite music</li>
+                        <li>Try yoga or stretching</li>
+                        <li>Play a sport you enjoy</li>
+                    </ul>
+                </div>
+
+                <div class="tip-card" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="tip-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <h3>Talk It Out</h3>
+                    <p>Sharing your feelings with someone you trust can lighten your emotional load. Whether it's a friend, family member, teacher, or counselor—talking helps you process stress and gain new perspectives.</p>
+                    <div class="tip-resources">
+                        <a href="tel:988" class="resource-link">
+                            <i class="fas fa-phone"></i> Crisis Hotline: 988
+                        </a>
+                    </div>
+                </div>
+
+                <div class="tip-card" data-aos="zoom-in" data-aos-delay="300">
+                    <div class="tip-icon">
+                        <i class="fas fa-bed"></i>
+                    </div>
+                    <h3>Prioritize Sleep</h3>
+                    <p>Teens need 8-10 hours of sleep. Lack of sleep amplifies stress and makes everything feel harder. Create a bedtime routine, avoid screens before bed, and make your room a sleep sanctuary.</p>
+                    <ul class="tip-list">
+                        <li>Set a consistent bedtime</li>
+                        <li>Avoid caffeine after 3 PM</li>
+                        <li>Keep your room cool and dark</li>
+                        <li>No screens 1 hour before bed</li>
+                    </ul>
+                </div>
+
+                <div class="tip-card" data-aos="zoom-in" data-aos-delay="400">
+                    <div class="tip-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <h3>Organize & Plan</h3>
+                    <p>Break big tasks into smaller, manageable steps. Use a planner or app to track assignments and commitments. When you have a plan, stress loses its power because you're in control.</p>
+                    <ul class="tip-list">
+                        <li>Use a planner or digital calendar</li>
+                        <li>Break tasks into small steps</li>
+                        <li>Set realistic deadlines</li>
+                        <li>Celebrate small wins</li>
+                    </ul>
+                </div>
+
+                <div class="tip-card" data-aos="zoom-in" data-aos-delay="500">
+                    <div class="tip-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3>Digital Detox</h3>
+                    <p>Social media can fuel stress through comparison and FOMO. Take regular breaks from your phone and social media. Real-life connections and experiences are what truly matter.</p>
+                    <ul class="tip-list">
+                        <li>Set app time limits</li>
+                        <li>Have phone-free meals</li>
+                        <li>Unfollow accounts that stress you</li>
+                        <li>Practice being present</li>
+                    </ul>
+                </div>
+
+                <div class="tip-card" data-aos="zoom-in" data-aos-delay="600">
+                    <div class="tip-icon">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <h3>Creative Outlets</h3>
+                    <p>Express yourself through art, music, writing, or any creative activity. Creativity is therapeutic—it helps you process emotions and provides a healthy escape from stress.</p>
+                    <ul class="tip-list">
+                        <li>Journal your thoughts</li>
+                        <li>Draw or paint</li>
+                        <li>Play an instrument</li>
+                        <li>Write poetry or stories</li>
+                    </ul>
+                </div>
+
+                <div class="tip-card" data-aos="zoom-in" data-aos-delay="700">
+                    <div class="tip-icon">
+                        <i class="fas fa-smile-beam"></i>
+                    </div>
+                    <h3>Practice Gratitude</h3>
+                    <p>Each day, write down three things you're grateful for. Gratitude shifts your focus from what's wrong to what's right, rewiring your brain to notice the positive aspects of life.</p>
+                    <div class="tip-action">
+                        <button class="btn-small" onclick="showGratitudePrompt()">
+                            <i class="fas fa-heart"></i> Start Today
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+                    </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <i class="fas fa-brain"></i>
+                    <span>MindSurf</span>
+                </div>
+                <p>Empowering teens to ride the waves of stress with confidence</p>
+                <div class="footer-links">
+                    <a href="#home">Home</a>
+                    <a href="#about">About</a>
+                    <a href="#quiz">Quiz</a>
+                    <a href="#tips">Tips</a>
+                </div>
+                <p class="footer-copyright">&copy; 2024 MindSurf. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Breathing Exercise Modal -->
+    <div id="breathingModal" class="modal">
+        <div class="modal-content breathing-modal">
+            <span class="close-modal" onclick="closeBreathingExercise()">&times;</span>
+            <h2>Breathing Exercise</h2>
+            <div class="breathing-circle" id="breathingCircle">
+                <div class="breathing-text" id="breathingText">Get Ready</div>
+            </div>
+            <button class="btn btn-secondary" onclick="closeBreathingExercise()">Close</button>
+        </div>
+    </div>
+
+    <script src="/js/main.js"></script>
+</body>
+</html>

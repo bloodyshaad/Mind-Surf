@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users Management - MindSurf Admin</title>
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-brain"></i>
+                <h2>MindSurf Admin</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="/admin" class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/admin/users" class="nav-item active">
+                    <i class="fas fa-users"></i>
+                    <span>Users</span>
+                </a>
+                <a href="/admin/responses" class="nav-item">
+                    <i class="fas fa-clipboard-list"></i>
+                    <span>Quiz Responses</span>
+                </a>
+                <a href="/admin/analytics" class="nav-item">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>Analytics</span>
+                </a>
+                <a href="/admin/settings" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="/" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    <span>Back to Site</span>
+                </a>
+                <a href="/logout" class="nav-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="admin-header">
+                <div class="header-left">
+                    <h1>Users Management</h1>
+                    <p>Manage and monitor all registered users</p>
+                </div>
+                <div class="header-right">
+                    <div class="user-info">
+                        <i class="fas fa-user-shield"></i>
+                        <span><%= user.username %></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Stats Cards -->
+            <section class="stats-section">
+                <div class="stat-card card-primary">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Total Users</h3>
+                        <p class="stat-number"><%= totalUsers %></p>
+                        <span class="stat-label">All registered users</span>
+                    </div>
+                </div>
+
+                <div class="stat-card card-warning">
+                    <div class="stat-icon">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Admin Users</h3>
+                        <p class="stat-number"><%= adminUsers %></p>
+                        <span class="stat-label">Administrator accounts</span>
+                    </div>
+                </div>
+
+                <div class="stat-card card-success">
+                    <div class="stat-icon">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Regular Users</h3>
+                        <p class="stat-number"><%= regularUsers %></p>
+                        <span class="stat-label">Standard accounts</span>
+                    </div>
+                </div>
+
+                <div class="stat-card card-info">
+                    <div class="stat-icon">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>New This Week</h3>
+                        <p class="stat-number" id="newUsersCount">0</p>
+                        <span class="stat-label">Recent registrations</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Users Table -->
+            <section class="table-section">
+                <div class="table-header">
+                    <h2><i class="fas fa-list"></i> All Users</h2>
+                    <div class="table-actions">
+                        <input type="text" id="searchInput" placeholder="Search users..." style="padding: 0.75rem 1rem; border: 1px solid var(--border); border-radius: 10px; font-family: 'Poppins', sans-serif; margin-right: 1rem;">
+                        <button class="btn btn-secondary" onclick="refreshData()">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Joined Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <% if (users.length > 0) { %>
+                                <% users.forEach(u => { %>
+                                    <tr>
+                                        <td>
+                                            <div class="user-cell">
+                                                <i class="fas fa-user-circle"></i>
+                                                <%= u.username %>
+                                            </div>
+                                        </td>
+                                        <td><%= u.email %></td>
+                                        <td>
+                                            <% if (u.isAdmin) { %>
+                                                <span class="stress-badge stress-high">
+                                                    <i class="fas fa-shield-alt"></i> Admin
+                                                </span>
+                                            <% } else { %>
+                                                <span class="stress-badge stress-low">
+                                                    <i class="fas fa-user"></i> User
+                                                </span>
+                                            <% } %>
+                                        </td>
+                                        <td><%= new Date(u.createdAt).toLocaleDateString() %></td>
+                                        <td>
+                                            <button class="btn-icon" onclick="viewUserDetails('<%= u._id %>', '<%= u.username %>', '<%= u.email %>', <%= u.isAdmin %>)" title="View Details">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            <% } else { %>
+                                <tr>
+                                    <td colspan="5" class="no-data">No users found</td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- User Details Modal -->
+            <div id="userModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+                <div style="background: white; padding: 2rem; border-radius: 15px; max-width: 500px; width: 90%; box-shadow: var(--shadow-lg);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h2 style="margin: 0; color: var(--dark);"><i class="fas fa-user-circle"></i> User Details</h2>
+                        <button onclick="closeModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--gray);">&times;</button>
+                    </div>
+                    <div id="modalContent" style="line-height: 2;">
+                        <!-- Content will be inserted here -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Calculate new users this week
+        const users = <%- JSON.stringify(users) %>;
+        const oneWeekAgo = new Date();
+        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+        
+        const newUsersThisWeek = users.filter(u => new Date(u.createdAt) > oneWeekAgo).length;
+        document.getElementById('newUsersCount').textContent = newUsersThisWeek;
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('#usersTableBody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        function viewUserDetails(id, username, email, isAdmin) {
+            const modal = document.getElementById('userModal');
+            const content = document.getElementById('modalContent');
+            
+            const user = users.find(u => u._id === id);
+            const joinDate = new Date(user.createdAt).toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            
+            content.innerHTML = `
+                <p><strong>Username:</strong> ${username}</p>
+                <p><strong>Email:</strong> ${email}</p>
+                <p><strong>Role:</strong> ${isAdmin ? '<span class="stress-badge stress-high"><i class="fas fa-shield-alt"></i> Administrator</span>' : '<span class="stress-badge stress-low"><i class="fas fa-user"></i> Regular User</span>'}</p>
+                <p><strong>Joined:</strong> ${joinDate}</p>
+                <p><strong>User ID:</strong> <code style="background: var(--light); padding: 0.25rem 0.5rem; border-radius: 5px; font-size: 0.85rem;">${id}</code></p>
+            `;
+            
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('userModal').style.display = 'none';
+        }
+
+        function refreshData() {
+            location.reload();
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('userModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Sidebar navigation - highlight active page
+        const currentPath = window.location.pathname;
+        document.querySelectorAll('.nav-item').forEach(item => {
+            const href = item.getAttribute('href');
+            if (href && !href.startsWith('#')) {
+                if (currentPath === href) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

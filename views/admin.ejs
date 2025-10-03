@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - MindSurf</title>
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-brain"></i>
+                <h2>MindSurf Admin</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="/admin" class="nav-item active">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/admin/users" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    <span>Users</span>
+                </a>
+                <a href="/admin/responses" class="nav-item">
+                    <i class="fas fa-clipboard-list"></i>
+                    <span>Quiz Responses</span>
+                </a>
+                <a href="/admin/analytics" class="nav-item">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>Analytics</span>
+                </a>
+                <a href="/admin/settings" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="/" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    <span>Back to Site</span>
+                </a>
+                <a href="/logout" class="nav-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="admin-header">
+                <div class="header-left">
+                    <h1>Dashboard Overview</h1>
+                    <p>Welcome back, <%= user && user.username ? user.username : 'Admin' %>!</p>
+                </div>
+                <div class="header-right">
+                    <div class="user-info">
+                        <i class="fas fa-user-shield"></i>
+                        <span><%= user && user.username ? user.username : 'Admin' %></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Stats Cards -->
+            <section class="stats-section">
+                <div class="stat-card card-primary">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Total Users</h3>
+                        <p class="stat-number"><%= typeof totalUsers !== 'undefined' ? totalUsers : 0 %></p>
+                        <span class="stat-label">Registered members</span>
+                    </div>
+                </div>
+
+                <div class="stat-card card-success">
+                    <div class="stat-icon">
+                        <i class="fas fa-clipboard-check"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Quiz Responses</h3>
+                        <p class="stat-number"><%= typeof totalQuizzes !== 'undefined' ? totalQuizzes : 0 %></p>
+                        <span class="stat-label">Total submissions</span>
+                    </div>
+                </div>
+
+                <div class="stat-card card-warning">
+                    <div class="stat-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>High Stress</h3>
+                        <p class="stat-number" id="highStressCount">0</p>
+                        <span class="stat-label">Users needing attention</span>
+                    </div>
+                </div>
+
+                <div class="stat-card card-info">
+                    <div class="stat-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Avg. Stress Level</h3>
+                        <p class="stat-number" id="avgStressLevel">-</p>
+                        <span class="stat-label">Overall metric</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Charts Section -->
+            <section class="charts-section">
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h2><i class="fas fa-chart-pie"></i> Stress Level Distribution</h2>
+                        <p>Breakdown of user stress levels from quiz responses</p>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="stressDistributionChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h2><i class="fas fa-chart-bar"></i> Weekly Activity</h2>
+                        <p>Quiz submissions over the past 7 days</p>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="activityChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Recent Responses Table -->
+            <section class="table-section">
+                <div class="table-header">
+                    <h2><i class="fas fa-list"></i> Recent Quiz Responses</h2>
+                    <div class="table-actions">
+                        <button class="btn btn-secondary" onclick="refreshData()">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Stress Level</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (quizResponses && quizResponses.length > 0) { %>
+                                <% quizResponses.forEach(response => { %>
+                                    <tr>
+                                        <td>
+                                            <div class="user-cell">
+                                                <i class="fas fa-user-circle"></i>
+                                                <%= response.username || 'Unknown User' %>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="stress-badge stress-<%= response.stressLevel ? response.stressLevel.toLowerCase() : 'unknown' %>">
+                                                <%= response.stressLevel || 'Unknown' %>
+                                            </span>
+                                        </td>
+                                        <td><%= response.createdAt ? new Date(response.createdAt).toLocaleDateString() : 'N/A' %></td>
+                                        <td>
+                                            <button class="btn-icon" onclick="viewDetails('<%= response._id || '' %>')">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            <% } else { %>
+                                <tr>
+                                    <td colspan="4" class="no-data">No quiz responses yet</td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Insights Section -->
+            <section class="insights-section">
+                <div class="insight-card">
+                    <div class="insight-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <div class="insight-content">
+                        <h3>Key Insights</h3>
+                        <ul id="insightsList">
+                            <li>Loading insights...</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Prepare data for charts
+        const stressDistribution = <%- JSON.stringify(stressDistribution || []) %>;
+        
+        // Process stress distribution data
+        const stressLabels = [];
+        const stressData = [];
+        const stressColors = {
+            'High': '#ff6b6b',
+            'Moderate': '#ffd93d',
+            'Low': '#6bcf7f'
+        };
+
+        if (stressDistribution && Array.isArray(stressDistribution)) {
+            stressDistribution.forEach(item => {
+                if (item && item._id) {
+                    stressLabels.push(item._id);
+                    stressData.push(item.count || 0);
+                }
+            });
+        }
+
+        // Update high stress count
+        const highStressItem = stressDistribution && Array.isArray(stressDistribution) ? 
+            stressDistribution.find(item => item && item._id === 'High') : null;
+        document.getElementById('highStressCount').textContent = highStressItem ? highStressItem.count : 0;
+
+        // Calculate average stress level
+        const totalResponses = stressData.reduce((a, b) => a + b, 0);
+        if (totalResponses > 0) {
+            const highItem = stressDistribution.find(item => item && item._id === 'High');
+            const modItem = stressDistribution.find(item => item && item._id === 'Moderate');
+            const lowItem = stressDistribution.find(item => item && item._id === 'Low');
+            const highCount = highItem ? highItem.count : 0;
+            const modCount = modItem ? modItem.count : 0;
+            const lowCount = lowItem ? lowItem.count : 0;
+            const avgScore = ((highCount * 3 + modCount * 2 + lowCount * 1) / totalResponses).toFixed(1);
+            document.getElementById('avgStressLevel').textContent = avgScore + '/3';
+        }
+
+        // Initialize charts
+        function initializeCharts() {
+            // Stress Distribution Pie Chart
+            const ctxPie = document.getElementById('stressDistributionChart');
+            if (ctxPie) {
+                const chartLabels = stressLabels.length > 0 ? stressLabels : ['No Data'];
+                const chartData = stressData.length > 0 ? stressData : [1];
+                const chartColors = stressLabels.length > 0 ? 
+                    stressLabels.map(label => stressColors[label] || '#95a5a6') : 
+                    ['#e0e0e0'];
+
+                new Chart(ctxPie.getContext('2d'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: chartLabels,
+                        datasets: [{
+                            data: chartData,
+                            backgroundColor: chartColors,
+                            borderWidth: 3,
+                            borderColor: '#fff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    padding: 20,
+                                    font: {
+                                        size: 14,
+                                        family: "'Poppins', sans-serif"
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                enabled: stressLabels.length > 0,
+                                callbacks: {
+                                    label: function(context) {
+                                        if (stressLabels.length === 0) return 'No data available';
+                                        const label = context.label || '';
+                                        const value = context.parsed || 0;
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                        return `${label}: ${value} (${percentage}%)`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Activity Bar Chart
+            const ctxBar = document.getElementById('activityChart');
+            if (ctxBar) {
+                // Fetch activity data
+                fetch('/api/admin/stats')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        const activityData = data && data.recentActivity ? data.recentActivity.reverse() : [];
+                        const activityLabels = activityData.length > 0 ? 
+                            activityData.map(item => {
+                                if (item && item._id) {
+                                    const date = new Date(item._id);
+                                    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                                }
+                                return 'Unknown';
+                            }) : 
+                            ['No Data'];
+                        const activityCounts = activityData.length > 0 ? 
+                            activityData.map(item => item.count || 0) : 
+                            [0];
+
+                        new Chart(ctxBar.getContext('2d'), {
+                            type: 'bar',
+                            data: {
+                                labels: activityLabels,
+                                datasets: [{
+                                    label: 'Quiz Submissions',
+                                    data: activityCounts,
+                                    backgroundColor: activityData.length > 0 ? 'rgba(99, 102, 241, 0.8)' : 'rgba(224, 224, 224, 0.8)',
+                                    borderColor: activityData.length > 0 ? 'rgba(99, 102, 241, 1)' : 'rgba(200, 200, 200, 1)',
+                                    borderWidth: 2,
+                                    borderRadius: 8
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        ticks: {
+                                            stepSize: 1,
+                                            font: {
+                                                family: "'Poppins', sans-serif"
+                                            }
+                                        },
+                                        grid: {
+                                            color: 'rgba(0, 0, 0, 0.05)'
+                                        }
+                                    },
+                                    x: {
+                                        ticks: {
+                                            font: {
+                                                family: "'Poppins', sans-serif"
+                                            }
+                                        },
+                                        grid: {
+                                            display: false
+                                        }
+                                    }
+                                },
+                                plugins: {
+                                    legend: {
+                                        display: false
+                                    },
+                                    tooltip: {
+                                        enabled: activityData.length > 0
+                                    }
+                                }
+                            }
+                        });
+
+                        // Generate insights
+                        generateInsights(data);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching activity data:', error);
+                        
+                        // Create empty chart on error
+                        new Chart(ctxBar.getContext('2d'), {
+                            type: 'bar',
+                            data: {
+                                labels: ['No Data'],
+                                datasets: [{
+                                    label: 'Quiz Submissions',
+                                    data: [0],
+                                    backgroundColor: 'rgba(224, 224, 224, 0.8)',
+                                    borderColor: 'rgba(200, 200, 200, 1)',
+                                    borderWidth: 2,
+                                    borderRadius: 8
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        ticks: {
+                                            stepSize: 1,
+                                            font: {
+                                                family: "'Poppins', sans-serif"
+                                            }
+                                        }
+                                    }
+                                },
+                                plugins: {
+                                    legend: {
+                                        display: false
+                                    },
+                                    tooltip: {
+                                        enabled: false
+                                    }
+                                }
+                            }
+                        });
+                        
+                        document.getElementById('insightsList').innerHTML = 
+                            '<li>Unable to load insights. Please try again later.</li>';
+                    });
+            }
+        }
+
+        function generateInsights(data) {
+            const insightsList = document.getElementById('insightsList');
+            const insights = [];
+
+            const totalResponses = stressData.reduce((a, b) => a + b, 0);
+            const highStressItem = stressDistribution.find(item => item && item._id === 'High');
+            const highStress = highStressItem ? highStressItem.count : 0;
+            const highPercentage = totalResponses > 0 ? ((highStress / totalResponses) * 100).toFixed(0) : 0;
+
+            if (highPercentage > 30) {
+                insights.push('⚠️ ' + highPercentage + '% of users report high stress levels - consider promoting stress management resources');
+            } else if (highPercentage > 0) {
+                insights.push('✓ ' + highPercentage + '% of users report high stress - within normal range');
+            } else {
+                insights.push('✓ No users currently reporting high stress levels');
+            }
+
+            const recentActivity = data && data.recentActivity ? data.recentActivity : [];
+            if (recentActivity.length > 0) {
+                const latestCount = recentActivity[recentActivity.length - 1].count;
+                insights.push('📊 ' + latestCount + ' quiz submissions today');
+            }
+
+            if (totalResponses > 10) {
+                insights.push('📈 Great engagement! ' + totalResponses + ' total quiz responses collected');
+            } else if (totalResponses > 0) {
+                insights.push('📊 ' + totalResponses + ' quiz responses collected so far');
+            } else {
+                insights.push('📊 No quiz responses collected yet');
+            }
+
+            insightsList.innerHTML = insights.map(function(insight) { 
+                return '<li>' + insight + '</li>'; 
+            }).join('');
+        }
+
+        function viewDetails(id) {
+            if (id) {
+                alert('Viewing details for response: ' + id);
+            } else {
+                alert('Unable to view details: Invalid response ID');
+            }
+        }
+
+        function refreshData() {
+            location.reload();
+        }
+
+        // Initialize charts when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCharts();
+            
+            // Sidebar navigation - highlight active page
+            const currentPath = window.location.pathname;
+            document.querySelectorAll('.nav-item').forEach(item => {
+                const href = item.getAttribute('href');
+                if (href && !href.startsWith('#')) {
+                    if (currentPath === href || (currentPath === '/admin' && href === '/admin')) {
+                        item.classList.add('active');
+                    } else {
+                        item.classList.remove('active');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stress Quiz - MindSurf</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <i class="fas fa-brain"></i>
+                <span>MindSurf</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/#about" class="nav-link">About Stress</a></li>
+                <li><a href="/quiz" class="nav-link active">Take Quiz</a></li>
+                <li><a href="/#tips" class="nav-link">Beat Stress</a></li>
+                <li><a href="/logout" class="nav-link btn-logout">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="quiz-section" style="padding-top: 120px; min-height: 100vh;">
+        <div class="container">
+            <h2 class="section-title">
+                <i class="fas fa-clipboard-list"></i>
+                Stress Quiz: Public Performance Edition
+            </h2>
+            <p class="section-subtitle">Discover your stress triggers when performing in public</p>
+
+            <div class="quiz-container">
+                <form id="quizForm">
+                    <div class="quiz-question" data-aos="fade-up">
+                        <h3><span class="question-number">1.</span> How often do you feel nervous before speaking in front of others?</h3>
+                        <div class="quiz-options">
+                            <label class="quiz-option">
+                                <input type="radio" name="q1" value="never" required>
+                                <span class="option-text">
+                                    <i class="fas fa-smile"></i>
+                                    Never - I'm totally comfortable
+                                </span>
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q1" value="sometimes" required>
+                                <span class="option-text">
+                                    <i class="fas fa-meh"></i>
+                                    Sometimes - Depends on the situation
+                                </span>
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q1" value="often" required>
+                                <span class="option-text">
+                                    <i class="fas fa-frown"></i>
+                                    Often - I get nervous most times
+                                </span>
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q1" value="always" required>
+                                <span class="option-text">
+                                    <i class="fas fa-dizzy"></i>
+                                    Always - It terrifies me
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question" data-aos="fade-up" data-aos-delay="100">
+                        <h3><span class="question-number">2.</span> Do you experience physical symptoms (sweating, shaking) when performing?</h3>
+                        <div class="quiz-options">
+                            <label class="quiz-option">
+                                <input type="radio" name="q2" value="never" required>
+                                <span class="option-text">
+                                    <i class="fas fa-smile"></i>
+                                    Never - I stay calm and collected
+                                </span>
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q2" value="sometimes" required>
+                                <span class="option-text">
+                                    <i class="fas fa-meh"></i>
+                                    Sometimes - Minor symptoms
+                                </span>
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q2" value="often" required>
+                                <span class="option-text">
+                                    <i class="fas fa-frown"></i>
+                                    Often - Noticeable symptoms
+                                </span>
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q2" value="always" required>
+                                <span class="option-text">
+                                    <i class="fas fa-dizzy"></i>
+                                    Always - Severe physical reactions
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question" data-aos="fade-up" data-aos-delay="200">
+                        <h3><span class="question-number">3.</span> How often do you worry about being judged by others?</h3>
+                        <div class="quiz-options">
+                            <label class="quiz-option">
+                                <input type="radio" name="q3" value="never" required>
+                                <span class="option-text">
+                                    <i class="fas fa-smile"></i>
+                                    Never - I don't care what others think
+                                </span>
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q3" value="sometimes" required>
+                                <span class="option-text">
+                                    <i class="fas fa-meh"></i>
+                                    Sometimes - Occasional concerns
+                                </span>
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q3" value="often" required>
+                                <span class="option-text">
+                                    <i class="fas fa-frown"></i>
+                                    Often - It's on my mind a lot
+                                </span>
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q3" value="always" required>
+                                <span class="option-text">
+                                    <i class="fas fa-dizzy"></i>
+                                    Always - I'm constantly worried
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question" data-aos="fade-up" data-aos-delay="300">
+                        <h3><span class="question-number">4.</span> Do you avoid situations where you have to perform in public?</h3>
+                        <div class="quiz-options">
+                            <label class="quiz-option">
+                                <input type="radio" name="q4" value="never" required>
+                                <span class="option-text">
+                                    <i class="fas fa-smile"></i>
+                                    Never - I embrace opportunities
+                                </span>
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q4" value="sometimes" required>
+                                <span class="option-text">
+                                    <i class="fas fa-meh"></i>
+                                    Sometimes - If I can avoid it easily
+                                </span>
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q4" value="often" required>
+                                <span class="option-text">
+                                    <i class="fas fa-frown"></i>
+                                    Often - I try to avoid them
+                                </span>
+                            </label>
+                            <label class="quiz-option">
+                                <input type="radio" name="q4" value="always" required>
+                                <span class="option-text">
+                                    <i class="fas fa-dizzy"></i>
+                                    Always - I avoid them at all costs
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-submit">
+                        <i class="fas fa-check-circle"></i> Submit Quiz
+                    </button>
+                </form>
+
+                <div id="quizResult" class="quiz-result" style="display: none;">
+                    <div class="result-content">
+                        <i class="fas fa-chart-line result-icon"></i>
+                        <h3>Your Stress Level: <span id="stressLevel"></span></h3>
+                        <p id="stressMessage"></p>
+                        <a href="/#tips" class="btn btn-secondary">View Stress-Beating Tips</a>
+                        <a href="/" class="btn btn-secondary" style="margin-left: 1rem;">Back to Home</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <i class="fas fa-brain"></i>
+                    <span>MindSurf</span>
+                </div>
+                <p>Empowering teens to ride the waves of stress with confidence</p>
+                <p class="footer-copyright">&copy; 2024 MindSurf. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/js/main.js"></script>
+</body>
+</html>

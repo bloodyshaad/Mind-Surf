@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - MindSurf Admin</title>
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-brain"></i>
+                <h2>MindSurf Admin</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="/admin" class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/admin/users" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    <span>Users</span>
+                </a>
+                <a href="/admin/responses" class="nav-item">
+                    <i class="fas fa-clipboard-list"></i>
+                    <span>Quiz Responses</span>
+                </a>
+                <a href="/admin/analytics" class="nav-item active">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>Analytics</span>
+                </a>
+                <a href="/admin/settings" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="/" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    <span>Back to Site</span>
+                </a>
+                <a href="/logout" class="nav-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="admin-header">
+                <div class="header-left">
+                    <h1>Analytics & Insights</h1>
+                    <p>Comprehensive data analysis and trends</p>
+                </div>
+                <div class="header-right">
+                    <div class="user-info">
+                        <i class="fas fa-user-shield"></i>
+                        <span><%= user.username %></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Stats Cards -->
+            <section class="stats-section">
+                <div class="stat-card card-primary">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Total Users</h3>
+                        <p class="stat-number"><%= totalUsers %></p>
+                        <span class="stat-label">Registered members</span>
+                    </div>
+                </div>
+
+                <div class="stat-card card-success">
+                    <div class="stat-icon">
+                        <i class="fas fa-clipboard-check"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Total Responses</h3>
+                        <p class="stat-number"><%= totalQuizzes %></p>
+                        <span class="stat-label">Quiz submissions</span>
+                    </div>
+                </div>
+
+                <div class="stat-card card-info">
+                    <div class="stat-icon">
+                        <i class="fas fa-percentage"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Participation Rate</h3>
+                        <p class="stat-number" id="participationRate">0%</p>
+                        <span class="stat-label">Users who took quiz</span>
+                    </div>
+                </div>
+
+                <div class="stat-card card-warning">
+                    <div class="stat-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Avg. Stress Score</h3>
+                        <p class="stat-number" id="avgStressScore">-</p>
+                        <span class="stat-label">Out of 3.0</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Charts Section -->
+            <section class="charts-section">
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h2><i class="fas fa-chart-pie"></i> Stress Level Distribution</h2>
+                        <p>Breakdown of stress levels across all responses</p>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="stressDistributionChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h2><i class="fas fa-chart-line"></i> Monthly Trends</h2>
+                        <p>Quiz submission trends over the past months</p>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="monthlyTrendsChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Additional Analytics -->
+            <section class="charts-section">
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h2><i class="fas fa-chart-bar"></i> Weekly Activity</h2>
+                        <p>Quiz submissions over the past 7 days</p>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="weeklyActivityChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h2><i class="fas fa-clock"></i> Submission Times</h2>
+                        <p>Peak hours for quiz submissions</p>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="timeDistributionChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Insights Section -->
+            <section class="insights-section">
+                <div class="insight-card">
+                    <div class="insight-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <div class="insight-content">
+                        <h3>Key Insights & Recommendations</h3>
+                        <ul id="insightsList">
+                            <li>Loading insights...</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        const stressDistribution = <%- JSON.stringify(stressDistribution || []) %>;
+        const monthlyActivity = <%- JSON.stringify(monthlyActivity || []) %>;
+        const totalUsers = <%= totalUsers %>;
+        const totalQuizzes = <%= totalQuizzes %>;
+
+        // Calculate participation rate
+        const participationRate = totalUsers > 0 ? ((totalQuizzes / totalUsers) * 100).toFixed(1) : 0;
+        document.getElementById('participationRate').textContent = participationRate + '%';
+
+        // Calculate average stress score
+        const highItem = stressDistribution.find(item => item._id === 'High');
+        const modItem = stressDistribution.find(item => item._id === 'Moderate');
+        const lowItem = stressDistribution.find(item => item._id === 'Low');
+        const highCount = highItem ? highItem.count : 0;
+        const modCount = modItem ? modItem.count : 0;
+        const lowCount = lowItem ? lowItem.count : 0;
+        const totalResponses = highCount + modCount + lowCount;
+        
+        if (totalResponses > 0) {
+            const avgScore = ((highCount * 3 + modCount * 2 + lowCount * 1) / totalResponses).toFixed(2);
+            document.getElementById('avgStressScore').textContent = avgScore;
+        }
+
+        // Stress Distribution Chart
+        const stressLabels = [];
+        const stressData = [];
+        const stressColors = {
+            'High': '#ff6b6b',
+            'Moderate': '#ffd93d',
+            'Low': '#6bcf7f'
+        };
+
+        stressDistribution.forEach(item => {
+            stressLabels.push(item._id || 'Unknown');
+            stressData.push(item.count);
+        });
+
+        // Prepare chart data - show empty chart if no data
+        const chartLabels = stressLabels.length > 0 ? stressLabels : ['No Data'];
+        const chartData = stressData.length > 0 ? stressData : [1];
+        const chartColors = stressLabels.length > 0 ? 
+            stressLabels.map(label => stressColors[label] || '#95a5a6') : 
+            ['#e0e0e0'];
+
+        const ctxStress = document.getElementById('stressDistributionChart').getContext('2d');
+        new Chart(ctxStress, {
+            type: 'doughnut',
+            data: {
+                labels: chartLabels,
+                datasets: [{
+                    data: chartData,
+                    backgroundColor: chartColors,
+                    borderWidth: 3,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            font: {
+                                size: 14,
+                                family: "'Poppins', sans-serif"
+                            }
+                        }
+                    },
+                    tooltip: {
+                        enabled: stressLabels.length > 0,
+                        callbacks: {
+                            label: function(context) {
+                                if (stressLabels.length === 0) return 'No data available';
+                                const label = context.label || '';
+                                const value = context.parsed || 0;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                return `${label}: ${value} (${percentage}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Monthly Trends Chart
+        const monthlyLabels = monthlyActivity.length > 0 ? 
+            monthlyActivity.map(item => {
+                const [year, month] = item._id.split('-');
+                const date = new Date(year, month - 1);
+                return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+            }) : 
+            ['No Data'];
+        const monthlyCounts = monthlyActivity.length > 0 ? 
+            monthlyActivity.map(item => item.count) : 
+            [0];
+
+        const ctxMonthly = document.getElementById('monthlyTrendsChart').getContext('2d');
+        new Chart(ctxMonthly, {
+            type: 'line',
+            data: {
+                labels: monthlyLabels,
+                datasets: [{
+                    label: 'Quiz Submissions',
+                    data: monthlyCounts,
+                    borderColor: monthlyActivity.length > 0 ? 'rgba(99, 102, 241, 1)' : 'rgba(200, 200, 200, 1)',
+                    backgroundColor: monthlyActivity.length > 0 ? 'rgba(99, 102, 241, 0.1)' : 'rgba(224, 224, 224, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1,
+                            font: {
+                                family: "'Poppins', sans-serif"
+                            }
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            font: {
+                                family: "'Poppins', sans-serif"
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        enabled: monthlyActivity.length > 0
+                    }
+                }
+            }
+        });
+
+        // Weekly Activity Chart
+        fetch('/api/admin/stats')
+            .then(response => response.json())
+            .then(data => {
+                const activityData = data.recentActivity ? data.recentActivity.reverse() : [];
+                const activityLabels = activityData.length > 0 ? 
+                    activityData.map(item => {
+                        const date = new Date(item._id);
+                        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                    }) : 
+                    ['No Data'];
+                const activityCounts = activityData.length > 0 ? 
+                    activityData.map(item => item.count) : 
+                    [0];
+
+                const ctxWeekly = document.getElementById('weeklyActivityChart').getContext('2d');
+                new Chart(ctxWeekly, {
+                    type: 'bar',
+                    data: {
+                        labels: activityLabels,
+                        datasets: [{
+                            label: 'Submissions',
+                            data: activityCounts,
+                            backgroundColor: activityData.length > 0 ? 'rgba(99, 102, 241, 0.8)' : 'rgba(224, 224, 224, 0.8)',
+                            borderColor: activityData.length > 0 ? 'rgba(99, 102, 241, 1)' : 'rgba(200, 200, 200, 1)',
+                            borderWidth: 2,
+                            borderRadius: 8
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 1,
+                                    font: {
+                                        family: "'Poppins', sans-serif"
+                                    }
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                enabled: activityData.length > 0
+                            }
+                        }
+                    }
+                });
+
+                generateInsights();
+            })
+            .catch(error => {
+                console.error('Error fetching stats:', error);
+                // Create empty chart on error
+                const ctxWeekly = document.getElementById('weeklyActivityChart').getContext('2d');
+                new Chart(ctxWeekly, {
+                    type: 'bar',
+                    data: {
+                        labels: ['No Data'],
+                        datasets: [{
+                            label: 'Submissions',
+                            data: [0],
+                            backgroundColor: 'rgba(224, 224, 224, 0.8)',
+                            borderColor: 'rgba(200, 200, 200, 1)',
+                            borderWidth: 2,
+                            borderRadius: 8
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 1,
+                                    font: {
+                                        family: "'Poppins', sans-serif"
+                                    }
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                enabled: false
+                            }
+                        }
+                    }
+                });
+                generateInsights();
+            });
+
+        // Time Distribution Chart (Mock data for demonstration)
+        const ctxTime = document.getElementById('timeDistributionChart').getContext('2d');
+        const hasData = totalQuizzes > 0;
+        new Chart(ctxTime, {
+            type: 'bar',
+            data: {
+                labels: hasData ? ['Morning', 'Afternoon', 'Evening', 'Night'] : ['No Data'],
+                datasets: [{
+                    label: 'Submissions',
+                    data: hasData ? [
+                        Math.floor(totalQuizzes * 0.2),
+                        Math.floor(totalQuizzes * 0.35),
+                        Math.floor(totalQuizzes * 0.3),
+                        Math.floor(totalQuizzes * 0.15)
+                    ] : [0],
+                    backgroundColor: hasData ? [
+                        'rgba(255, 206, 86, 0.8)',
+                        'rgba(75, 192, 192, 0.8)',
+                        'rgba(153, 102, 255, 0.8)',
+                        'rgba(54, 162, 235, 0.8)'
+                    ] : ['rgba(224, 224, 224, 0.8)'],
+                    borderWidth: 2,
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1,
+                            font: {
+                                family: "'Poppins', sans-serif"
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        enabled: hasData
+                    }
+                }
+            }
+        });
+
+        function generateInsights() {
+            const insightsList = document.getElementById('insightsList');
+            const insights = [];
+
+            // Participation insight
+            if (participationRate > 50) {
+                insights.push(`🎉 Excellent participation rate of ${participationRate}% - users are highly engaged!`);
+            } else if (participationRate > 25) {
+                insights.push(`📊 Good participation rate of ${participationRate}% - consider promoting the quiz more`);
+            } else {
+                insights.push(`⚠️ Low participation rate of ${participationRate}% - increase quiz visibility and promotion`);
+            }
+
+            // Stress level insight
+            const highPercentage = totalResponses > 0 ? ((highCount / totalResponses) * 100).toFixed(0) : 0;
+            if (highPercentage > 40) {
+                insights.push(`🚨 ${highPercentage}% of users report high stress - urgent need for intervention resources`);
+            } else if (highPercentage > 20) {
+                insights.push(`⚠️ ${highPercentage}% of users report high stress - monitor and provide support resources`);
+            } else {
+                insights.push(`✅ Only ${highPercentage}% report high stress - stress management strategies are effective`);
+            }
+
+            // Growth insight
+            if (monthlyActivity.length > 1) {
+                const latestMonth = monthlyActivity[monthlyActivity.length - 1].count;
+                const previousMonth = monthlyActivity[monthlyActivity.length - 2].count;
+                const growth = ((latestMonth - previousMonth) / previousMonth * 100).toFixed(0);
+                
+                if (growth > 0) {
+                    insights.push(`📈 ${growth}% growth in quiz submissions compared to last month`);
+                } else if (growth < 0) {
+                    insights.push(`📉 ${Math.abs(growth)}% decrease in submissions - consider re-engagement campaigns`);
+                }
+            }
+
+            // User base insight
+            if (totalUsers > 100) {
+                insights.push(`🌟 Strong user base with ${totalUsers} registered members`);
+            } else if (totalUsers > 50) {
+                insights.push(`👥 Growing community with ${totalUsers} members - focus on retention`);
+            } else {
+                insights.push(`🌱 Building community with ${totalUsers} members - focus on user acquisition`);
+            }
+
+            insightsList.innerHTML = insights.map(insight => `<li>${insight}</li>`).join('');
+        }
+
+        // Sidebar navigation - highlight active page
+        const currentPath = window.location.pathname;
+        document.querySelectorAll('.nav-item').forEach(item => {
+            const href = item.getAttribute('href');
+            if (href && !href.startsWith('#')) {
+                if (currentPath === href) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Responses - MindSurf Admin</title>
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-brain"></i>
+                <h2>MindSurf Admin</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="/admin" class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/admin/users" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    <span>Users</span>
+                </a>
+                <a href="/admin/responses" class="nav-item active">
+                    <i class="fas fa-clipboard-list"></i>
+                    <span>Quiz Responses</span>
+                </a>
+                <a href="/admin/analytics" class="nav-item">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>Analytics</span>
+                </a>
+                <a href="/admin/settings" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="/" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    <span>Back to Site</span>
+                </a>
+                <a href="/logout" class="nav-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="admin-header">
+                <div class="header-left">
+                    <h1>Quiz Responses</h1>
+                    <p>View and analyze all quiz submissions</p>
+                </div>
+                <div class="header-right">
+                    <div class="user-info">
+                        <i class="fas fa-user-shield"></i>
+                        <span><%= user.username %></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Stats Cards -->
+            <section class="stats-section">
+                <div class="stat-card card-primary">
+                    <div class="stat-icon">
+                        <i class="fas fa-clipboard-check"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Total Responses</h3>
+                        <p class="stat-number"><%= totalResponses %></p>
+                        <span class="stat-label">All quiz submissions</span>
+                    </div>
+                </div>
+
+                <div class="stat-card card-danger">
+                    <div class="stat-icon">
+                        <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>High Stress</h3>
+                        <p class="stat-number" id="highStressCount">0</p>
+                        <span class="stat-label">High stress responses</span>
+                    </div>
+                </div>
+
+                <div class="stat-card card-warning">
+                    <div class="stat-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Moderate Stress</h3>
+                        <p class="stat-number" id="moderateStressCount">0</p>
+                        <span class="stat-label">Moderate stress responses</span>
+                    </div>
+                </div>
+
+                <div class="stat-card card-success">
+                    <div class="stat-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Low Stress</h3>
+                        <p class="stat-number" id="lowStressCount">0</p>
+                        <span class="stat-label">Low stress responses</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Chart Section -->
+            <section class="charts-section">
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h2><i class="fas fa-chart-pie"></i> Stress Level Distribution</h2>
+                        <p>Visual breakdown of all quiz responses by stress level</p>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="stressChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Responses Table -->
+            <section class="table-section">
+                <div class="table-header">
+                    <h2><i class="fas fa-list"></i> All Quiz Responses</h2>
+                    <div class="table-actions">
+                        <select id="filterSelect" style="padding: 0.75rem 1rem; border: 1px solid var(--border); border-radius: 10px; font-family: 'Poppins', sans-serif; margin-right: 1rem; cursor: pointer;">
+                            <option value="all">All Levels</option>
+                            <option value="High">High Stress</option>
+                            <option value="Moderate">Moderate Stress</option>
+                            <option value="Low">Low Stress</option>
+                        </select>
+                        <button class="btn btn-secondary" onclick="refreshData()">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Stress Level</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="responsesTableBody">
+                            <% if (quizResponses.length > 0) { %>
+                                <% quizResponses.forEach(response => { %>
+                                    <tr data-stress="<%= response.stressLevel %>">
+                                        <td>
+                                            <div class="user-cell">
+                                                <i class="fas fa-user-circle"></i>
+                                                <%= response.username %>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="stress-badge stress-<%= response.stressLevel.toLowerCase() %>">
+                                                <%= response.stressLevel %>
+                                            </span>
+                                        </td>
+                                        <td><%= new Date(response.createdAt).toLocaleDateString() %></td>
+                                        <td><%= new Date(response.createdAt).toLocaleTimeString() %></td>
+                                        <td>
+                                            <button class="btn-icon" onclick='viewResponseDetails(<%- JSON.stringify(response) %>)' title="View Details">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            <% } else { %>
+                                <tr>
+                                    <td colspan="5" class="no-data">No quiz responses yet</td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Response Details Modal -->
+            <div id="responseModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; overflow-y: auto;">
+                <div style="background: white; padding: 2rem; border-radius: 15px; max-width: 600px; width: 90%; box-shadow: var(--shadow-lg); margin: 2rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h2 style="margin: 0; color: var(--dark);"><i class="fas fa-clipboard-list"></i> Response Details</h2>
+                        <button onclick="closeModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--gray);">&times;</button>
+                    </div>
+                    <div id="modalContent">
+                        <!-- Content will be inserted here -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const stressDistribution = <%- JSON.stringify(stressDistribution || []) %>;
+        
+        // Update stress counts
+        const highItem = stressDistribution.find(item => item._id === 'High');
+        const modItem = stressDistribution.find(item => item._id === 'Moderate');
+        const lowItem = stressDistribution.find(item => item._id === 'Low');
+        
+        document.getElementById('highStressCount').textContent = highItem ? highItem.count : 0;
+        document.getElementById('moderateStressCount').textContent = modItem ? modItem.count : 0;
+        document.getElementById('lowStressCount').textContent = lowItem ? lowItem.count : 0;
+
+        // Create chart
+        const stressLabels = [];
+        const stressData = [];
+        const stressColors = {
+            'High': '#ff6b6b',
+            'Moderate': '#ffd93d',
+            'Low': '#6bcf7f'
+        };
+
+        stressDistribution.forEach(item => {
+            stressLabels.push(item._id || 'Unknown');
+            stressData.push(item.count);
+        });
+
+        // Prepare chart data - show empty chart if no data
+        const chartLabels = stressLabels.length > 0 ? stressLabels : ['No Data'];
+        const chartData = stressData.length > 0 ? stressData : [1];
+        const chartColors = stressLabels.length > 0 ? 
+            stressLabels.map(label => stressColors[label] || '#95a5a6') : 
+            ['#e0e0e0'];
+
+        const ctx = document.getElementById('stressChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: chartLabels,
+                datasets: [{
+                    data: chartData,
+                    backgroundColor: chartColors,
+                    borderWidth: 3,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            font: {
+                                size: 14,
+                                family: "'Poppins', sans-serif"
+                            }
+                        }
+                    },
+                    tooltip: {
+                        enabled: stressLabels.length > 0,
+                        callbacks: {
+                            label: function(context) {
+                                if (stressLabels.length === 0) return 'No data available';
+                                const label = context.label || '';
+                                const value = context.parsed || 0;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                return `${label}: ${value} (${percentage}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Filter functionality
+        document.getElementById('filterSelect').addEventListener('change', function(e) {
+            const filterValue = e.target.value;
+            const rows = document.querySelectorAll('#responsesTableBody tr');
+            
+            rows.forEach(row => {
+                const stressLevel = row.getAttribute('data-stress');
+                if (filterValue === 'all' || stressLevel === filterValue) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        function viewResponseDetails(response) {
+            const modal = document.getElementById('responseModal');
+            const content = document.getElementById('modalContent');
+            
+            const date = new Date(response.createdAt).toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            let responsesHTML = '<div style="margin-top: 1rem;">';
+            response.responses.forEach((r, index) => {
+                responsesHTML += `
+                    <div style="margin-bottom: 1.5rem; padding: 1rem; background: var(--light); border-radius: 10px;">
+                        <p style="font-weight: 600; color: var(--dark); margin-bottom: 0.5rem;">Question ${index + 1}:</p>
+                        <p style="color: var(--gray); margin-bottom: 0.5rem; font-size: 0.9rem;">${r.question}</p>
+                        <p style="color: var(--primary-color); font-weight: 600;">Answer: ${r.answer}</p>
+                    </div>
+                `;
+            });
+            responsesHTML += '</div>';
+            
+            content.innerHTML = `
+                <div style="line-height: 2;">
+                    <p><strong>Username:</strong> ${response.username}</p>
+                    <p><strong>Stress Level:</strong> <span class="stress-badge stress-${response.stressLevel.toLowerCase()}">${response.stressLevel}</span></p>
+                    <p><strong>Submitted:</strong> ${date}</p>
+                    <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid var(--border);">
+                    <h3 style="color: var(--dark); margin-bottom: 1rem;">Quiz Responses:</h3>
+                    ${responsesHTML}
+                </div>
+            `;
+            
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('responseModal').style.display = 'none';
+        }
+
+        function refreshData() {
+            location.reload();
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('responseModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Sidebar navigation - highlight active page
+        const currentPath = window.location.pathname;
+        document.querySelectorAll('.nav-item').forEach(item => {
+            const href = item.getAttribute('href');
+            if (href && !href.startsWith('#')) {
+                if (currentPath === href) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

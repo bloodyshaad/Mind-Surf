@@ -38,23 +38,30 @@ const mongoUri = getMongoUri();
 // Session store setup
 let store;
 if (mongoUri) {
-  store = MongoStore.create({
-    mongoUrl: mongoUri,
-    collectionName: 'sessions',
-    ttl: 24 * 60 * 60, // 1 day
-    autoRemove: 'native',
-    touchAfter: 0 // Always update
-  });
-  
-  store.on('create', () => console.log('Session created'));
-  store.on('touch', () => console.log('Session touched'));
-  store.on('update', () => console.log('Session updated'));
-  store.on('set', () => console.log('Session set'));
-  store.on('destroy', () => console.log('Session destroyed'));
-  
-  console.log('MongoDB session store initialized');
+  try {
+    store = MongoStore.create({
+      mongoUrl: mongoUri,
+      collectionName: 'sessions',
+      ttl: 24 * 60 * 60, // 1 day
+      autoRemove: 'native',
+      touchAfter: 0, // Always update
+      stringify: false
+    });
+    
+    store.on('create', (sid) => console.log('✓ Session created:', sid));
+    store.on('touch', (sid) => console.log('✓ Session touched:', sid));
+    store.on('update', (sid) => console.log('✓ Session updated:', sid));
+    store.on('set', (sid) => console.log('✓ Session set:', sid));
+    store.on('destroy', (sid) => console.log('✓ Session destroyed:', sid));
+    store.on('error', (err) => console.error('✗ Session store error:', err));
+    
+    console.log('✓ MongoDB session store initialized successfully');
+  } catch (error) {
+    console.error('✗ Failed to create MongoDB session store:', error);
+    store = null;
+  }
 } else {
-  console.warn('Using MemoryStore - sessions will not persist!');
+  console.error('✗ MONGODB_URI not set - sessions will NOT persist!');
 }
 
 // Session middleware
@@ -67,10 +74,21 @@ app.use(session({
   cookie: {
     maxAge: 1000 * 60 * 60 * 24, // 24 hours
     httpOnly: true,
-    secure: false, // Set to true if using HTTPS
-    sameSite: 'lax'
-  }
+    secure: false,
+    sameSite: 'lax',
+    path: '/'
+  },
+  name: 'sessionId'
 }));
+
+// Debug middleware - log every request with session info
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+  console.log('Session ID:', req.sessionID);
+  console.log('Session data:', req.session);
+  console.log('User authenticated:', !!req.session?.userId);
+  next();
+});
 
 // MongoDB Connection for app data
 let cachedDb = null;

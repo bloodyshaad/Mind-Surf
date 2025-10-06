@@ -76,7 +76,7 @@
 
 html {
     scroll-behavior: smooth;
-    font-size: 16px;
+    font-size: 14px;
 }
 
 body {
@@ -478,17 +478,17 @@ body {
 
 /* Section Styles */
 section {
-    padding: 6rem 2rem;
+    padding: 4rem 2rem;
 }
 
 .section-container {
-    max-width: 1400px;
+    max-width: 1200px;
     margin: 0 auto;
 }
 
 .section-header {
     text-align: center;
-    margin-bottom: 4rem;
+    margin-bottom: 3rem;
 }
 
 .section-label {
@@ -653,20 +653,29 @@ section {
     font-size: 2rem;
     font-weight: 700;
     margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+.results-level {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
 }
 
 .results-score {
     font-size: 4rem;
     font-weight: 800;
-    color: var(--color-black);
-    margin-bottom: 1rem;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
 }
 
 .results-description {
-    font-size: 1.15rem;
-    color: var(--color-gray-600);
-    margin-bottom: 2rem;
-    line-height: 1.7;
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    margin-bottom: 0;
+    line-height: 1.6;
+    max-width: 600px;
+    margin: 0 auto;
 }
 
 .results-categories {
@@ -687,12 +696,195 @@ section {
     font-weight: 700;
     margin-bottom: 0.5rem;
     font-size: 1.1rem;
+    color: var(--text-primary);
 }
 
 .category-score {
-    font-size: 2rem;
+    font-size: 2.5rem;
     font-weight: 800;
+    color: var(--text-primary);
+}
+
+.category-level {
+    font-weight: 600;
+    margin-top: 0.5rem;
+}
+
+/* Quiz Results Styles */
+.results-overall-card {
+    background-color: var(--color-gray-50);
+    padding: 2rem;
+    border-radius: 16px;
+    margin-bottom: 2rem;
+    text-align: center;
+    border: 1px solid var(--border-color);
+}
+
+.results-charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.results-chart-card {
+    background-color: var(--bg-primary);
+    padding: 2rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+
+.chart-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+}
+
+.chart-description {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+}
+
+.chart-container {
+    position: relative;
+    height: 300px;
+}
+
+.chart-container canvas {
+    color: var(--text-primary);
+}
+
+.results-top-section {
+    margin-bottom: 2rem;
+}
+
+.section-subtitle {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+.category-level-badge {
+    display: inline-block;
+    padding: 0.375rem 0.75rem;
+    border-radius: 6px;
+}
+
+.results-detailed-card {
+    background-color: var(--bg-primary);
+    padding: 2rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 2rem;
+}
+
+.detailed-categories {
+    display: grid;
+    gap: 1rem;
+}
+
+.detailed-category-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background-color: var(--color-gray-50);
+    border-radius: 8px;
+}
+
+.category-info {
+    flex: 0 0 180px;
+}
+
+.category-info-name {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: var(--text-primary);
+}
+
+.category-info-level {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.category-progress {
+    flex: 1;
+}
+
+.category-progress-bar {
+    background-color: var(--color-gray-200);
+    height: 24px;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+}
+
+.category-progress-fill {
+    height: 100%;
+    transition: width 1s ease;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 0.5rem;
+}
+
+.category-progress-text {
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.results-recommendations {
+    background-color: var(--color-gray-50);
+    padding: 2rem;
+    border-radius: 12px;
+    border-left: 4px solid var(--color-black);
+    margin-bottom: 2rem;
+}
+
+.recommendations-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+.recommendations-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.recommendation-item {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    padding: 1rem;
+    background-color: var(--bg-primary);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.recommendation-icon {
+    font-size: 1.5rem;
     color: var(--color-black);
+    flex-shrink: 0;
+}
+
+.recommendation-text {
+    line-height: 1.6;
+    color: var(--text-primary);
+}
+
+.results-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
 /* Understanding Stress Section */
@@ -966,10 +1158,12 @@ section {
 
 /* Action Plan */
 .action-plan {
-    background-color: var(--color-black);
-    color: var(--color-white);
+    background-color: var(--text-primary);
+    color: var(--bg-primary);
     border-radius: 16px;
     padding: 3rem;
+    border: 2px solid var(--text-primary);
+    transition: var(--transition-smooth);
 }
 
 .plan-title {
@@ -977,13 +1171,15 @@ section {
     font-weight: 700;
     margin-bottom: 1rem;
     text-align: center;
+    color: var(--bg-primary);
 }
 
 .plan-description {
     text-align: center;
-    color: var(--color-gray-300);
+    color: var(--bg-secondary);
     margin-bottom: 2rem;
     font-size: 1.05rem;
+    opacity: 0.9;
 }
 
 .plan-steps {
@@ -998,17 +1194,24 @@ section {
     display: flex;
     align-items: center;
     gap: 1rem;
-    background-color: var(--color-gray-900);
+    background-color: rgba(255, 255, 255, 0.1);
     padding: 1.5rem;
     border-radius: 12px;
     min-width: 200px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: var(--transition-smooth);
+}
+
+[data-theme="dark"] .plan-step {
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(0, 0, 0, 0.3);
 }
 
 .step-icon {
     width: 50px;
     height: 50px;
-    background-color: var(--color-white);
-    color: var(--color-black);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -1021,23 +1224,28 @@ section {
 .step-content h4 {
     font-size: 1.1rem;
     margin-bottom: 0.25rem;
+    color: var(--bg-primary);
 }
 
 .step-content p {
     font-size: 0.9rem;
-    color: var(--color-gray-400);
+    color: var(--bg-secondary);
+    opacity: 0.9;
 }
 
 .plan-arrow {
     font-size: 2rem;
-    color: var(--color-gray-600);
+    color: var(--bg-primary);
+    opacity: 0.6;
 }
 
 /* Footer */
 .footer {
-    background-color: var(--color-gray-900);
-    color: var(--color-white);
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
     padding: 4rem 2rem 2rem;
+    border-top: 2px solid var(--border-color);
+    transition: var(--transition-smooth);
 }
 
 .footer-content {
@@ -1050,12 +1258,16 @@ section {
 }
 
 .footer-brand .logo {
-    color: var(--color-white);
+    color: var(--text-primary);
     margin-bottom: 1rem;
 }
 
+.footer-brand .logo-icon {
+    color: var(--text-primary);
+}
+
 .footer-tagline {
-    color: var(--color-gray-400);
+    color: var(--text-secondary);
     font-size: 1.05rem;
 }
 
@@ -1069,18 +1281,19 @@ section {
     font-size: 1.1rem;
     margin-bottom: 1rem;
     font-weight: 700;
+    color: var(--text-primary);
 }
 
 .footer-column a {
     display: block;
-    color: var(--color-gray-400);
+    color: var(--text-secondary);
     text-decoration: none;
     margin-bottom: 0.75rem;
     transition: var(--transition-smooth);
 }
 
 .footer-column a:hover {
-    color: var(--color-white);
+    color: var(--text-primary);
     transform: translateX(5px);
 }
 
@@ -1088,9 +1301,9 @@ section {
     max-width: 1400px;
     margin: 0 auto;
     padding-top: 2rem;
-    border-top: 1px solid var(--color-gray-800);
+    border-top: 1px solid var(--border-color);
     text-align: center;
-    color: var(--color-gray-500);
+    color: var(--text-tertiary);
     font-size: 0.9rem;
 }
 

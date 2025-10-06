@@ -407,45 +407,45 @@ class QuizManager {
                 <h2 class="results-title">Your Stress Assessment Results</h2>
                 
                 <!-- Overall Score Section -->
-                <div style="background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%); padding: 2rem; border-radius: 16px; margin-bottom: 2rem; text-align: center;">
-                    <div class="results-score" style="font-size: 4rem; font-weight: 800; margin-bottom: 0.5rem;">${results.stressPercentage}%</div>
-                    <div class="results-level" style="font-size: 1.75rem; font-weight: 700; margin-bottom: 1rem; color: ${this.getStressLevelColor(results.level)}">
+                <div class="results-overall-card">
+                    <div class="results-score">${results.stressPercentage}%</div>
+                    <div class="results-level" style="color: ${this.getStressLevelColor(results.level)}">
                         ${results.level} Stress Level
                     </div>
-                    <p class="results-description" style="max-width: 600px; margin: 0 auto; font-size: 1.05rem; line-height: 1.6;">${this.getStressLevelDescription(results.level)}</p>
+                    <p class="results-description">${this.getStressLevelDescription(results.level)}</p>
                 </div>
 
                 <!-- Charts Grid -->
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
+                <div class="results-charts-grid">
                     <!-- Category Breakdown Pie Chart -->
-                    <div style="background-color: white; padding: 2rem; border-radius: 12px; border: 1px solid #e5e5e5;">
-                        <h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">Stress by Category</h3>
-                        <p style="color: #666; font-size: 0.95rem; margin-bottom: 1.5rem;">Distribution of stress across different life areas</p>
-                        <div style="position: relative; height: 300px;">
+                    <div class="results-chart-card">
+                        <h3 class="chart-title">Stress by Category</h3>
+                        <p class="chart-description">Distribution of stress across different life areas</p>
+                        <div class="chart-container">
                             <canvas id="categoryPieChart"></canvas>
                         </div>
                     </div>
 
                     <!-- Stress Level Distribution Doughnut Chart -->
-                    <div style="background-color: white; padding: 2rem; border-radius: 12px; border: 1px solid #e5e5e5;">
-                        <h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">Overall vs Target</h3>
-                        <p style="color: #666; font-size: 0.95rem; margin-bottom: 1.5rem;">Your stress level compared to healthy range</p>
-                        <div style="position: relative; height: 300px;">
+                    <div class="results-chart-card">
+                        <h3 class="chart-title">Overall vs Target</h3>
+                        <p class="chart-description">Your stress level compared to healthy range</p>
+                        <div class="chart-container">
                             <canvas id="overallDoughnutChart"></canvas>
                         </div>
                     </div>
                 </div>
 
                 <!-- Top 3 Categories Cards -->
-                <div style="margin-bottom: 2rem;">
-                    <h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem;">Top Stress Areas</h3>
+                <div class="results-top-section">
+                    <h3 class="section-subtitle">Top Stress Areas</h3>
                     <div class="results-categories">
                         ${topCategories.map(([category, data]) => `
-                            <div class="category-result" style="background: white; padding: 1.5rem; border-radius: 12px; border: 1px solid #e5e5e5; transition: transform 0.3s ease, box-shadow 0.3s ease;">
-                                <div class="category-name" style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.75rem;">${this.getCategoryName(category)}</div>
-                                <div class="category-score" style="font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem;">${Math.round(data.percentage)}%</div>
-                                <div class="category-level" style="color: ${this.getStressLevelColor(data.level)}; font-weight: 600; margin-top: 0.5rem;">
-                                    <span style="display: inline-block; padding: 0.375rem 0.75rem; background-color: ${this.getStressLevelColor(data.level)}15; border-radius: 6px;">
+                            <div class="category-result">
+                                <div class="category-name">${this.getCategoryName(category)}</div>
+                                <div class="category-score">${Math.round(data.percentage)}%</div>
+                                <div class="category-level" style="color: ${this.getStressLevelColor(data.level)};">
+                                    <span class="category-level-badge" style="background-color: ${this.getStressLevelColor(data.level)}15;">
                                         ${data.level} Level
                                     </span>
                                 </div>
@@ -455,19 +455,19 @@ class QuizManager {
                 </div>
 
                 <!-- Detailed Category Breakdown -->
-                <div style="background-color: white; padding: 2rem; border-radius: 12px; border: 1px solid #e5e5e5; margin-bottom: 2rem;">
-                    <h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem;">Detailed Category Analysis</h3>
-                    <div style="display: grid; gap: 1rem;">
+                <div class="results-detailed-card">
+                    <h3 class="section-subtitle">Detailed Category Analysis</h3>
+                    <div class="detailed-categories">
                         ${allCategories.map(([category, data]) => `
-                            <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background-color: #f9f9f9; border-radius: 8px;">
-                                <div style="flex: 0 0 180px;">
-                                    <div style="font-weight: 600; margin-bottom: 0.25rem;">${this.getCategoryName(category)}</div>
-                                    <div style="font-size: 0.85rem; color: #666;">${data.level} Level</div>
+                            <div class="detailed-category-item">
+                                <div class="category-info">
+                                    <div class="category-info-name">${this.getCategoryName(category)}</div>
+                                    <div class="category-info-level">${data.level} Level</div>
                                 </div>
-                                <div style="flex: 1;">
-                                    <div style="background-color: #e5e5e5; height: 24px; border-radius: 12px; overflow: hidden; position: relative;">
-                                        <div style="background: linear-gradient(90deg, ${this.getStressLevelColor(data.level)}, ${this.getStressLevelColor(data.level)}dd); height: 100%; width: ${data.percentage}%; transition: width 1s ease; display: flex; align-items: center; justify-content: flex-end; padding-right: 0.5rem;">
-                                            <span style="color: white; font-size: 0.75rem; font-weight: 700;">${Math.round(data.percentage)}%</span>
+                                <div class="category-progress">
+                                    <div class="category-progress-bar">
+                                        <div class="category-progress-fill" style="background: linear-gradient(90deg, ${this.getStressLevelColor(data.level)}, ${this.getStressLevelColor(data.level)}dd); width: ${data.percentage}%;">
+                                            <span class="category-progress-text">${Math.round(data.percentage)}%</span>
                                         </div>
                                     </div>
                                 </div>
@@ -477,22 +477,22 @@ class QuizManager {
                 </div>
 
                 <!-- Recommendations -->
-                <div style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); padding: 2rem; border-radius: 12px; border-left: 4px solid #0284c7; margin-bottom: 2rem;">
-                    <h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; color: #0c4a6e;">Personalized Recommendations</h3>
-                    <ul style="list-style: none; display: flex; flex-direction: column; gap: 1rem;">
+                <div class="results-recommendations">
+                    <h3 class="recommendations-title">Personalized Recommendations</h3>
+                    <ul class="recommendations-list">
                         ${this.getRecommendations(results).map(rec => `
-                            <li style="display: flex; gap: 1rem; align-items: flex-start; padding: 1rem; background-color: white; border-radius: 8px;">
-                                <span style="font-size: 1.5rem; color: #0284c7; flex-shrink: 0;">✓</span>
-                                <span style="line-height: 1.6;">${rec}</span>
+                            <li class="recommendation-item">
+                                <span class="recommendation-icon">✓</span>
+                                <span class="recommendation-text">${rec}</span>
                             </li>
                         `).join('')}
                     </ul>
                 </div>
 
                 <!-- Action Buttons -->
-                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                    <button class="btn-primary" onclick="window.location.href='#solutions'" style="padding: 1rem 2rem; font-size: 1.05rem;">View Solutions</button>
-                    <button class="btn-secondary" onclick="window.quizManager.retakeQuiz()" style="padding: 1rem 2rem; font-size: 1.05rem;">Retake Quiz</button>
+                <div class="results-actions">
+                    <button class="btn-primary btn-large" onclick="window.location.href='#solutions'">View Solutions</button>
+                    <button class="btn-secondary btn-large" onclick="window.quizManager.retakeQuiz()">Retake Quiz</button>
                 </div>
             </div>
         `;
@@ -502,6 +502,12 @@ class QuizManager {
     }
 
     renderResultCharts(results) {
+        // Get current theme colors
+        const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark';
+        const textColor = isDarkMode ? '#FFFFFF' : '#000000';
+        const borderColor = isDarkMode ? '#333333' : '#FFFFFF';
+        const gridColor = isDarkMode ? '#333333' : '#E5E5E5';
+        
         // Category Pie Chart
         const categoryLabels = [];
         const categoryData = [];
@@ -524,7 +530,7 @@ class QuizManager {
                     datasets: [{
                         data: categoryData,
                         backgroundColor: categoryColors,
-                        borderColor: '#ffffff',
+                        borderColor: borderColor,
                         borderWidth: 3
                     }]
                 },
@@ -536,6 +542,7 @@ class QuizManager {
                             position: 'bottom',
                             labels: {
                                 padding: 15,
+                                color: textColor,
                                 font: {
                                     size: 12,
                                     weight: '600'
@@ -543,6 +550,11 @@ class QuizManager {
                             }
                         },
                         tooltip: {
+                            backgroundColor: isDarkMode ? '#1A1A1A' : '#FFFFFF',
+                            titleColor: textColor,
+                            bodyColor: textColor,
+                            borderColor: gridColor,
+                            borderWidth: 1,
                             callbacks: {
                                 label: function(context) {
                                     return context.label + ': ' + context.parsed + '%';
@@ -569,9 +581,9 @@ class QuizManager {
                         data: [yourStress, remaining],
                         backgroundColor: [
                             this.getStressLevelColor(results.level),
-                            '#E5E5E5'
+                            isDarkMode ? '#333333' : '#E5E5E5'
                         ],
-                        borderColor: '#ffffff',
+                        borderColor: borderColor,
                         borderWidth: 3
                     }]
                 },
@@ -584,6 +596,7 @@ class QuizManager {
                             position: 'bottom',
                             labels: {
                                 padding: 15,
+                                color: textColor,
                                 font: {
                                     size: 12,
                                     weight: '600'
@@ -591,6 +604,11 @@ class QuizManager {
                             }
                         },
                         tooltip: {
+                            backgroundColor: isDarkMode ? '#1A1A1A' : '#FFFFFF',
+                            titleColor: textColor,
+                            bodyColor: textColor,
+                            borderColor: gridColor,
+                            borderWidth: 1,
                             callbacks: {
                                 label: function(context) {
                                     return context.label + ': ' + context.parsed + '%';

@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="MindSurf - A comprehensive stress management platform for teenagers. Take our interactive quiz, learn about stress, and discover evidence-based coping strategies.">
+    <meta name="keywords" content="stress management, teen mental health, stress quiz, anxiety relief, mental wellness">
+    <meta name="author" content="MindSurf">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="MindSurf - Navigate Your Stress">
+    <meta property="og:description" content="A comprehensive stress management platform for teenagers">
+    <meta property="og:image" content="/assets/og-image.png">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="MindSurf - Navigate Your Stress">
+    <meta name="twitter:description" content="A comprehensive stress management platform for teenagers">
+    
+    <title>MindSurf - Navigate Your Stress</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/animations.css">
+    
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+</head>
+<body>
+    <div id="app">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="logo">
+                    <svg class="logo-icon" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M25 5C14.5 5 6 13.5 6 24C6 34.5 14.5 43 25 43C35.5 43 44 34.5 44 24C44 13.5 35.5 5 25 5Z" stroke="currentColor" stroke-width="2"/>
+                        <path d="M15 24C15 24 18 18 25 18C32 18 35 24 35 24" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        <circle cx="20" cy="20" r="2" fill="currentColor"/>
+                        <circle cx="30" cy="20" r="2" fill="currentColor"/>
+                    </svg>
+                    <span class="logo-text">MindSurf</span>
+                </div>
+                <div class="nav-links">
+                    <a href="#home" class="nav-link active">Home</a>
+                    <a href="#quiz" class="nav-link">Stress Quiz</a>
+                    <a href="#understanding" class="nav-link">Understanding Stress</a>
+                    <a href="#solutions" class="nav-link">Solutions</a>
+                    <div class="dark-mode-toggle" id="darkModeToggle">
+                        <div class="dark-mode-toggle-slider">
+                            <span id="themeIcon">☀️</span>
+                        </div>
+                    </div>
+                    <a href="login.html" id="authBtn" class="btn-primary">Login</a>
+                </div>
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Mobile Menu -->
+        <div class="mobile-menu" id="mobileMenu">
+            <a href="#home" class="mobile-link">Home</a>
+            <a href="#quiz" class="mobile-link">Stress Quiz</a>
+            <a href="#understanding" class="mobile-link">Understanding Stress</a>
+            <a href="#solutions" class="mobile-link">Solutions</a>
+            <a href="login.html" id="authBtnMobile" class="btn-primary">Login</a>
+        </div>
+
+        <!-- Hero Section -->
+        <section id="home" class="hero">
+            <div class="hero-background">
+                <div class="floating-shape shape-1"></div>
+                <div class="floating-shape shape-2"></div>
+                <div class="floating-shape shape-3"></div>
+                <div class="floating-shape shape-4"></div>
+            </div>
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    <span class="title-line">Navigate Your</span>
+                    <span class="title-line highlight">Stress Journey</span>
+                </h1>
+                <p class="hero-description">
+                    Being a teenager comes with unique challenges—academic pressure, social dynamics, family expectations, and the constant navigation of self-identity. At MindSurf, we understand that stress isn't just a buzzword; it's a real experience that affects your mental health, physical wellbeing, and daily life. This platform is designed specifically for teens like you, offering evidence-based strategies, interactive tools, and a supportive space to understand and manage stress effectively. You're not alone in this journey, and taking control of your mental wellness starts here.
+                </p>
+                <div class="hero-cta">
+                    <button class="btn-large btn-primary" id="getStartedBtn">Get Started</button>
+                    <button class="btn-large btn-secondary" id="learnMoreBtn">Learn More</button>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <div class="stat-number" data-target="87">0</div>
+                        <div class="stat-label">% of teens experience stress</div>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <div class="stat-number" data-target="45">0</div>
+                        <div class="stat-label">% feel overwhelmed daily</div>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <div class="stat-number" data-target="92">0</div>
+                        <div class="stat-label">% can manage with right tools</div>
+                    </div>
+                </div>
+            </div>
+            <div class="scroll-indicator">
+                <div class="scroll-line"></div>
+                <span>Scroll to explore</span>
+            </div>
+        </section>
+
+        <!-- Quiz Section -->
+        <section id="quiz" class="quiz-section">
+            <div class="section-container">
+                <div class="section-header">
+                    <span class="section-label">Interactive Assessment</span>
+                    <h2 class="section-title">Discover Your Stress Sources</h2>
+                    <p class="section-description">Understanding where your stress comes from is the first step toward managing it effectively. Take this comprehensive quiz to identify your primary stress triggers.</p>
+                </div>
+                
+                <div id="quizContent" class="quiz-content">
+                    <div class="auth-required">
+                        <div class="lock-icon">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M19 11H5C3.89543 11 3 11.8954 3 13V20C3 21.1046 3.89543 22 5 22H19C20.1046 22 21 21.1046 21 20V13C21 11.8954 20.1046 11 19 11Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M7 11V7C7 5.67392 7.52678 4.40215 8.46447 3.46447C9.40215 2.52678 10.6739 2 12 2C13.3261 2 14.5979 2.52678 15.5355 3.46447C16.4732 4.40215 17 5.67392 17 7V11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <h3>Authentication Required</h3>
+                        <p>Please login or register to access the stress assessment quiz and track your progress over time.</p>
+                        <a href="login.html" class="btn-primary" id="quizAuthBtn">Login to Continue</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Understanding Stress Section -->
+        <section id="understanding" class="understanding-section">
+            <div class="section-container">
+                <div class="section-header">
+                    <span class="section-label">Knowledge Base</span>
+                    <h2 class="section-title">How Stress Affects You</h2>
+                    <p class="section-description">Stress impacts every aspect of your being—mentally, physically, and emotionally. Understanding these effects empowers you to recognize and address them.</p>
+                </div>
+
+                <div class="stress-effects-grid">
+                    <!-- Mental Effects -->
+                    <div class="effect-card" data-effect="mental">
+                        <div class="effect-icon">
+                            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="50" cy="50" r="35" stroke="currentColor" stroke-width="3"/>
+                                <path d="M35 45C35 45 40 35 50 35C60 35 65 45 65 45" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                                <path d="M35 60C35 60 40 55 50 55C60 55 65 60 65 60" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                                <circle cx="40" cy="42" r="3" fill="currentColor"/>
+                                <circle cx="60" cy="42" r="3" fill="currentColor"/>
+                            </svg>
+                        </div>
+                        <h3 class="effect-title">Mental Impact</h3>
+                        <div class="effect-content">
+                            <p class="effect-description">Stress significantly affects your cognitive functions and mental wellbeing. When you're stressed, your brain releases cortisol, which can impair memory formation and recall.</p>
+                            <ul class="effect-list">
+                                <li>
+                                    <span class="list-icon">→</span>
+                                    <div>
+                                        <strong>Difficulty Concentrating:</strong> Your mind feels scattered, making it hard to focus on tasks or retain information during study sessions.
+                                    </div>
+                                </li>
+                                <li>
+                                    <span class="list-icon">→</span>
+                                    <div>
+                                        <strong>Racing Thoughts:</strong> Your mind constantly jumps from worry to worry, making it difficult to relax or fall asleep.
+                                    </div>
+                                </li>
+                                <li>
+                                    <span class="list-icon">→</span>
+                                    <div>
+                                        <strong>Memory Problems:</strong> You forget assignments, appointments, or conversations, even important ones.
+                                    </div>
+                                </li>
+                                <li>
+                                    <span class="list-icon">→</span>
+                                    <div>
+                                        <strong>Negative Thinking:</strong> You develop a pessimistic outlook, expecting the worst outcomes in situations.
+                                    </div>
+                                </li>
+                                <li>
+                                    <span class="list-icon">→</span>
+                                    <div>
+                                        <strong>Decision Paralysis:</strong> Even simple choices feel overwhelming, leading to procrastination or avoidance.
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Physical Effects -->
+                    <div class="effect-card" data-effect="physical">
+                        <div class="effect-icon">
+                            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M50 20C50 20 35 30 35 45C35 55 42 62 50 62C58 62 65 55 65 45C65 30 50 20 50 20Z" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M50 62V80" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                                <path d="M40 75L50 80L60 75" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                                <circle cx="45" cy="42" r="2" fill="currentColor"/>
+                                <circle cx="55" cy="42" r="2" fill="currentColor"/>
+                            </svg>
+                        </div>
+                        <h3 class="effect-title">Physical Impact</h3>
+                        <div class="effect-content">
+                            <p class="effect-description">Your body responds to stress through the "fight or flight" response, releasing hormones that prepare you for danger. Chronic activation of this system takes a toll on your physical health.</p>
+                            <ul class="effect-list">
+                                <li>
+                                    <span class="list-icon">→</span>
+                                    <div>
+                                        <strong>Headaches & Migraines:</strong> Tension builds in your neck and shoulders, leading to frequent headaches or severe migraines.
+                                    </div>
+                                </li>
+                                <li>
+                                    <span class="list-icon">→</span>
+                                    <div>
+                                        <strong>Sleep Disruption:</strong> You struggle to fall asleep, wake up frequently, or feel exhausted despite sleeping.
+                                    </div>
+                                </li>
+                                <li>
+                                    <span class="list-icon">→</span>
+                                    <div>
+                                        <strong>Digestive Issues:</strong> Stress affects your gut, causing stomachaches, nausea, or changes in appetite.
+                                    </div>
+                                </li>
+                                <li>
+                                    <span class="list-icon">→</span>
+                                    <div>
+                                        <strong>Muscle Tension:</strong> Your body stays in a constant state of tension, leading to aches and pains.
+                                    </div>
+                                </li>
+                                <li>
+                                    <span class="list-icon">→</span>
+                                    <div>
+                                        <strong>Weakened Immunity:</strong> You get sick more often as stress suppresses your immune system's effectiveness.
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Emotional Effects -->
+                    <div class="effect-card" data-effect="emotional">
+                        <div class="effect-icon">
+                            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M50 25L55 40L70 42L58 52L62 67L50 59L38 67L42 52L30 42L45 40L50 25Z" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                                <circle cx="50" cy="50" r="30" stroke="currentColor" stroke-width="3"/>
+                            </svg>
+                        </div>
+                        <h3 class="effect-title">Emotional Impact</h3>
+                        <div class="effect-content">
+                            <p class="effect-description">Stress deeply affects your emotional regulation and mood stability. The constant pressure can overwhelm your coping mechanisms, leading to emotional exhaustion.</p>
+                            <ul class="effect-list">
+                                <li>
+                                    <span class="list-icon">→</span>
+                                    <div>
+                                        <strong>Anxiety & Worry:</strong> You feel constantly on edge, worrying about things that might go wrong or haven't happened yet.
+                                    </div>
+                                </li>
+                                <li>
+                                    <span class="list-icon">→</span>
+                                    <div>
+                                        <strong>Irritability:</strong> Small annoyances trigger disproportionate reactions, straining relationships with friends and family.
+                                    </div>
+                                </li>
+                                <li>
+                                    <span class="list-icon">→</span>
+                                    <div>
+                                        <strong>Mood Swings:</strong> Your emotions fluctuate rapidly, making you feel out of control of your own feelings.
+                                    </div>
+                                </li>
+                                <li>
+                                    <span class="list-icon">→</span>
+                                    <div>
+                                        <strong>Feeling Overwhelmed:</strong> Everything feels like too much, and you struggle to see a way forward.
+                                    </div>
+                                </li>
+                                <li>
+                                    <span class="list-icon">→</span>
+                                    <div>
+                                        <strong>Loss of Motivation:</strong> Activities you once enjoyed no longer bring pleasure, and you feel disconnected from your interests.
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Social Effects -->
+                    <div class="effect-card" data-effect="social">
+                        <div class="effect-icon">
+                            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="35" cy="40" r="12" stroke="currentColor" stroke-width="3"/>
+                                <circle cx="65" cy="40" r="12" stroke="currentColor" stroke-width="3"/>
+                                <path d="M25 70C25 70 30 60 35 60C40 60 42 65 42 65" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                                <path d="M58 65C58 65 60 60 65 60C70 60 75 70 75 70" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                                <path d="M42 65C42 65 45 62 50 62C55 62 58 65 58 65" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <h3 class="effect-title">Social Impact</h3>
+                        <div class="effect-content">
+                            <p class="effect-description">Stress influences how you interact with others and maintain relationships. When overwhelmed, you may withdraw or struggle to communicate effectively.</p>
+                            <ul class="effect-list">
+                                <li>
+                                    <span class="list-icon">→</span>
+                                    <div>
+                                        <strong>Social Withdrawal:</strong> You avoid social situations, preferring isolation even when you need support.
+                                    </div>
+                                </li>
+                                <li>
+                                    <span class="list-icon">→</span>
+                                    <div>
+                                        <strong>Communication Breakdown:</strong> You struggle to express your feelings or needs, leading to misunderstandings.
+                                    </div>
+                                </li>
+                                <li>
+                                    <span class="list-icon">→</span>
+                                    <div>
+                                        <strong>Relationship Strain:</strong> Stress causes conflicts with friends, family, or romantic partners.
+                                    </div>
+                                </li>
+                                <li>
+                                    <span class="list-icon">→</span>
+                                    <div>
+                                        <strong>Reduced Empathy:</strong> You find it harder to understand or care about others' perspectives when overwhelmed.
+                                    </div>
+                                </li>
+                                <li>
+                                    <span class="list-icon">→</span>
+                                    <div>
+                                        <strong>Trust Issues:</strong> Stress can make you more suspicious or defensive in your interactions with others.
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stress-cycle">
+                    <h3 class="cycle-title">The Stress Cycle</h3>
+                    <p class="cycle-description">Understanding how stress perpetuates itself helps you break the cycle:</p>
+                    <div class="cycle-diagram">
+                        <div class="cycle-step" data-step="1">
+                            <div class="step-number">1</div>
+                            <h4>Trigger Event</h4>
+                            <p>A stressor occurs (exam, conflict, pressure)</p>
+                        </div>
+                        <div class="cycle-arrow">→</div>
+                        <div class="cycle-step" data-step="2">
+                            <div class="step-number">2</div>
+                            <h4>Stress Response</h4>
+                            <p>Your body and mind react with symptoms</p>
+                        </div>
+                        <div class="cycle-arrow">→</div>
+                        <div class="cycle-step" data-step="3">
+                            <div class="step-number">3</div>
+                            <h4>Impaired Function</h4>
+                            <p>Performance and wellbeing decline</p>
+                        </div>
+                        <div class="cycle-arrow">→</div>
+                        <div class="cycle-step" data-step="4">
+                            <div class="step-number">4</div>
+                            <h4>More Stress</h4>
+                            <p>Poor outcomes create additional stressors</p>
+                        </div>
+                    </div>
+                    <div class="cycle-break">
+                        <div class="break-icon">��</div>
+                        <p>Break the cycle with effective stress management strategies</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Solutions Section -->
+        <section id="solutions" class="solutions-section">
+            <div class="section-container">
+                <div class="section-header">
+                    <span class="section-label">Action Plan</span>
+                    <h2 class="section-title">Strategies for Managing Stress</h2>
+                    <p class="section-description">Evidence-based techniques that actually work. These aren't quick fixes—they're sustainable practices that build resilience over time.</p>
+                </div>
+
+                <div class="solutions-grid">
+                    <!-- Mindfulness & Meditation -->
+                    <div class="solution-card">
+                        <div class="solution-number">01</div>
+                        <div class="solution-icon">
+                            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="50" cy="35" r="15" stroke="currentColor" stroke-width="2.5"/>
+                                <path d="M50 50V65" stroke="currentColor" stroke-width="2.5"/>
+                                <path d="M35 60L50 65L65 60" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M30 70C30 70 35 75 50 75C65 75 70 70 70 70" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <h3 class="solution-title">Mindfulness & Meditation</h3>
+                        <p class="solution-description">Train your mind to stay present and reduce anxiety about the future or regrets about the past.</p>
+                        <ul class="solution-techniques">
+                            <li><strong>5-Minute Breathing:</strong> Focus on your breath for 5 minutes daily. Inhale for 4 counts, hold for 4, exhale for 6.</li>
+                            <li><strong>Body Scan:</strong> Lie down and mentally scan from toes to head, releasing tension in each area.</li>
+                            <li><strong>Mindful Walking:</strong> Take a 10-minute walk, focusing on each step and your surroundings.</li>
+                            <li><strong>Guided Meditation:</strong> Use apps like Headspace or Calm for structured practice.</li>
+                        </ul>
+                        <div class="solution-impact">
+                            <span class="impact-label">Impact:</span>
+                            <span class="impact-value">Reduces cortisol by up to 30%</span>
+                        </div>
+                    </div>
+
+                    <!-- Physical Activity -->
+                    <div class="solution-card">
+                        <div class="solution-number">02</div>
+                        <div class="solution-icon">
+                            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="50" cy="25" r="10" stroke="currentColor" stroke-width="2.5"/>
+                                <path d="M50 35V55" stroke="currentColor" stroke-width="2.5"/>
+                                <path d="M35 45L50 40L65 45" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M40 55L50 75" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                                <path d="M60 55L50 75" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <h3 class="solution-title">Physical Activity</h3>
+                        <p class="solution-description">Exercise releases endorphins, your brain's natural mood elevators, while reducing stress hormones.</p>
+                        <ul class="solution-techniques">
+                            <li><strong>Cardio Sessions:</strong> 30 minutes of running, cycling, or dancing 3-4 times per week.</li>
+                            <li><strong>Yoga Practice:</strong> Combines physical movement with mindfulness for dual benefits.</li>
+                            <li><strong>Team Sports:</strong> Social connection plus physical activity amplifies stress relief.</li>
+                            <li><strong>Active Breaks:</strong> Take 5-minute movement breaks every hour during study sessions.</li>
+                        </ul>
+                        <div class="solution-impact">
+                            <span class="impact-label">Impact:</span>
+                            <span class="impact-value">Improves mood within 5 minutes</span>
+                        </div>
+                    </div>
+
+                    <!-- Sleep Hygiene -->
+                    <div class="solution-card">
+                        <div class="solution-number">03</div>
+                        <div class="solution-icon">
+                            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M50 20C35 20 25 30 25 45C25 60 35 70 50 70C65 70 75 60 75 45C75 30 65 20 50 20Z" stroke="currentColor" stroke-width="2.5"/>
+                                <path d="M50 35V45L58 53" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                                <circle cx="35" cy="25" r="3" fill="currentColor"/>
+                                <circle cx="45" cy="18" r="2" fill="currentColor"/>
+                                <circle cx="65" cy="25" r="3" fill="currentColor"/>
+                            </svg>
+                        </div>
+                        <h3 class="solution-title">Sleep Optimization</h3>
+                        <p class="solution-description">Quality sleep is essential for stress recovery and emotional regulation. Teens need 8-10 hours nightly.</p>
+                        <ul class="solution-techniques">
+                            <li><strong>Consistent Schedule:</strong> Go to bed and wake up at the same time, even on weekends.</li>
+                            <li><strong>Digital Sunset:</strong> No screens 1 hour before bed—blue light disrupts melatonin production.</li>
+                            <li><strong>Cool & Dark:</strong> Keep your room at 65-68°F with blackout curtains or an eye mask.</li>
+                            <li><strong>Wind-Down Ritual:</strong> Create a 30-minute relaxing routine (reading, stretching, journaling).</li>
+                        </ul>
+                        <div class="solution-impact">
+                            <span class="impact-label">Impact:</span>
+                            <span class="impact-value">Enhances emotional resilience by 40%</span>
+                        </div>
+                    </div>
+
+                    <!-- Time Management -->
+                    <div class="solution-card">
+                        <div class="solution-number">04</div>
+                        <div class="solution-icon">
+                            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="20" y="30" width="60" height="50" rx="5" stroke="currentColor" stroke-width="2.5"/>
+                                <path d="M30 30V25C30 23 31 22 33 22H67C69 22 70 23 70 25V30" stroke="currentColor" stroke-width="2.5"/>
+                                <line x1="30" y1="45" x2="70" y2="45" stroke="currentColor" stroke-width="2.5"/>
+                                <line x1="30" y1="55" x2="70" y2="55" stroke="currentColor" stroke-width="2.5"/>
+                                <line x1="30" y1="65" x2="55" y2="65" stroke="currentColor" stroke-width="2.5"/>
+                            </svg>
+                        </div>
+                        <h3 class="solution-title">Time Management</h3>
+                        <p class="solution-description">Feeling overwhelmed often stems from poor time management. Structure creates calm and control.</p>
+                        <ul class="solution-techniques">
+                            <li><strong>Priority Matrix:</strong> Categorize tasks as urgent/important, important/not urgent, etc.</li>
+                            <li><strong>Time Blocking:</strong> Assign specific time slots for different activities, including breaks.</li>
+                            <li><strong>Pomodoro Technique:</strong> Work for 25 minutes, break for 5. Repeat 4 times, then take 15-30 minutes.</li>
+                            <li><strong>Weekly Planning:</strong> Spend 30 minutes each Sunday planning the week ahead.</li>
+                        </ul>
+                        <div class="solution-impact">
+                            <span class="impact-label">Impact:</span>
+                            <span class="impact-value">Reduces overwhelm by 50%</span>
+                        </div>
+                    </div>
+
+                    <!-- Social Connection -->
+                    <div class="solution-card">
+                        <div class="solution-number">05</div>
+                        <div class="solution-icon">
+                            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M50 45C58 45 65 38 65 30C65 22 58 15 50 15C42 15 35 22 35 30C35 38 42 45 50 45Z" stroke="currentColor" stroke-width="2.5"/>
+                                <path d="M30 85C30 85 30 65 50 65C70 65 70 85 70 85" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                                <circle cx="25" cy="35" r="8" stroke="currentColor" stroke-width="2"/>
+                                <circle cx="75" cy="35" r="8" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                        </div>
+                        <h3 class="solution-title">Social Support</h3>
+                        <p class="solution-description">Strong relationships buffer against stress. Connection is a biological need, not a luxury.</p>
+                        <ul class="solution-techniques">
+                            <li><strong>Talk It Out:</strong> Share your feelings with trusted friends, family, or a counselor.</li>
+                            <li><strong>Quality Time:</strong> Schedule regular hangouts with people who make you feel good.</li>
+                            <li><strong>Join Groups:</strong> Participate in clubs, teams, or communities aligned with your interests.</li>
+                            <li><strong>Set Boundaries:</strong> It's okay to say no to toxic relationships or excessive demands.</li>
+                        </ul>
+                        <div class="solution-impact">
+                            <span class="impact-label">Impact:</span>
+                            <span class="impact-value">Increases stress resilience by 60%</span>
+                        </div>
+                    </div>
+
+                    <!-- Healthy Habits -->
+                    <div class="solution-card">
+                        <div class="solution-number">06</div>
+                        <div class="solution-icon">
+                            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M50 20L55 40L75 45L60 60L65 80L50 70L35 80L40 60L25 45L45 40L50 20Z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <h3 class="solution-title">Nutrition & Hydration</h3>
+                        <p class="solution-description">What you consume directly affects your stress levels and mental clarity.</p>
+                        <ul class="solution-techniques">
+                            <li><strong>Balanced Meals:</strong> Include protein, complex carbs, and healthy fats in every meal.</li>
+                            <li><strong>Limit Caffeine:</strong> Too much coffee or energy drinks increases anxiety and disrupts sleep.</li>
+                            <li><strong>Stay Hydrated:</strong> Drink 8-10 glasses of water daily. Dehydration worsens stress symptoms.</li>
+                            <li><strong>Stress-Fighting Foods:</strong> Omega-3s (fish, walnuts), magnesium (spinach, almonds), vitamin C (citrus).</li>
+                        </ul>
+                        <div class="solution-impact">
+                            <span class="impact-label">Impact:</span>
+                            <span class="impact-value">Stabilizes mood and energy levels</span>
+                        </div>
+                    </div>
+
+                    <!-- Creative Expression -->
+                    <div class="solution-card">
+                        <div class="solution-number">07</div>
+                        <div class="solution-icon">
+                            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M30 70L40 30L45 50L55 25L60 50L70 70" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <circle cx="40" cy="30" r="5" stroke="currentColor" stroke-width="2"/>
+                                <circle cx="55" cy="25" r="5" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                        </div>
+                        <h3 class="solution-title">Creative Outlets</h3>
+                        <p class="solution-description">Creative activities provide a healthy escape and help process emotions non-verbally.</p>
+                        <ul class="solution-techniques">
+                            <li><strong>Journaling:</strong> Write freely for 10 minutes daily about thoughts, feelings, or gratitude.</li>
+                            <li><strong>Art & Music:</strong> Draw, paint, play an instrument, or create playlists that match your mood.</li>
+                            <li><strong>Creative Writing:</strong> Poetry, stories, or even fan fiction can be therapeutic outlets.</li>
+                            <li><strong>DIY Projects:</strong> Building, crafting, or cooking engages your hands and quiets your mind.</li>
+                        </ul>
+                        <div class="solution-impact">
+                            <span class="impact-label">Impact:</span>
+                            <span class="impact-value">Reduces anxiety and boosts self-esteem</span>
+                        </div>
+                    </div>
+
+                    <!-- Professional Help -->
+                    <div class="solution-card">
+                        <div class="solution-number">08</div>
+                        <div class="solution-icon">
+                            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M50 30V70M30 50H70" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                                <circle cx="50" cy="50" r="25" stroke="currentColor" stroke-width="2.5"/>
+                                <circle cx="50" cy="50" r="35" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                        </div>
+                        <h3 class="solution-title">Seek Professional Help</h3>
+                        <p class="solution-description">Sometimes stress becomes too much to handle alone. Seeking help is a sign of strength, not weakness.</p>
+                        <ul class="solution-techniques">
+                            <li><strong>School Counselor:</strong> Free, accessible resource for immediate support and guidance.</li>
+                            <li><strong>Therapy:</strong> Cognitive Behavioral Therapy (CBT) is highly effective for stress and anxiety.</li>
+                            <li><strong>Crisis Lines:</strong> Text HOME to 741741 (Crisis Text Line) or call 988 (Suicide & Crisis Lifeline).</li>
+                            <li><strong>Support Groups:</strong> Connect with peers facing similar challenges in moderated settings.</li>
+                        </ul>
+                        <div class="solution-impact">
+                            <span class="impact-label">Impact:</span>
+                            <span class="impact-value">Professional guidance accelerates recovery</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-plan">
+                    <h3 class="plan-title">Your Personal Action Plan</h3>
+                    <p class="plan-description">Start small. Pick 2-3 strategies that resonate with you and commit to them for 21 days. Consistency matters more than perfection.</p>
+                    <div class="plan-steps">
+                        <div class="plan-step">
+                            <div class="step-icon">1</div>
+                            <div class="step-content">
+                                <h4>Identify</h4>
+                                <p>Recognize your stress triggers and symptoms</p>
+                            </div>
+                        </div>
+                        <div class="plan-arrow">→</div>
+                        <div class="plan-step">
+                            <div class="step-icon">2</div>
+                            <div class="step-content">
+                                <h4>Choose</h4>
+                                <p>Select strategies that fit your lifestyle</p>
+                            </div>
+                        </div>
+                        <div class="plan-arrow">→</div>
+                        <div class="plan-step">
+                            <div class="step-icon">3</div>
+                            <div class="step-content">
+                                <h4>Practice</h4>
+                                <p>Implement daily, even when you don't feel like it</p>
+                            </div>
+                        </div>
+                        <div class="plan-arrow">→</div>
+                        <div class="plan-step">
+                            <div class="step-icon">4</div>
+                            <div class="step-content">
+                                <h4>Adjust</h4>
+                                <p>Refine your approach based on what works</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <svg class="logo-icon" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M25 5C14.5 5 6 13.5 6 24C6 34.5 14.5 43 25 43C35.5 43 44 34.5 44 24C44 13.5 35.5 5 25 5Z" stroke="currentColor" stroke-width="2"/>
+                            <path d="M15 24C15 24 18 18 25 18C32 18 35 24 35 24" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <circle cx="20" cy="20" r="2" fill="currentColor"/>
+                            <circle cx="30" cy="20" r="2" fill="currentColor"/>
+                        </svg>
+                        <span class="logo-text">MindSurf</span>
+                    </div>
+                    <p class="footer-tagline">Navigate your stress journey with confidence</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <a href="#quiz">Stress Quiz</a>
+                        <a href="#understanding">Understanding Stress</a>
+                        <a href="#solutions">Solutions</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Support</h4>
+                        <a href="tel:988">Crisis Line: 988</a>
+                        <a href="sms:741741">Text: 741741</a>
+                        <a href="https://www.nimh.nih.gov/health/topics/child-and-adolescent-mental-health" target="_blank">NIMH Resources</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Legal</h4>
+                        <a href="#privacy">Privacy Policy</a>
+                        <a href="#terms">Terms of Service</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 MindSurf. All rights reserved. This platform provides educational information and is not a substitute for professional medical advice.</p>
+            </div>
+        </footer>
+
+            </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/quiz.js"></script>
+    <script src="js/animations.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

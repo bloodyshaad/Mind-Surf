@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1200" height="630" fill="#000000"/>
+    
+    <!-- Background Pattern -->
+    <circle cx="100" cy="100" r="150" fill="#1A1A1A" opacity="0.5"/>
+    <circle cx="1100" cy="530" r="200" fill="#1A1A1A" opacity="0.5"/>
+    <circle cx="600" cy="315" r="250" fill="#1A1A1A" opacity="0.3"/>
+    
+    <!-- Logo -->
+    <circle cx="300" cy="315" r="80" stroke="#FFFFFF" stroke-width="8"/>
+    <path d="M250 315C250 315 265 280 300 280C335 280 350 315 350 315" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round"/>
+    <circle cx="280" cy="300" r="8" fill="#FFFFFF"/>
+    <circle cx="320" cy="300" r="8" fill="#FFFFFF"/>
+    
+    <!-- Text -->
+    <text x="500" y="280" font-family="Arial, sans-serif" font-size="72" font-weight="bold" fill="#FFFFFF">MindSurf</text>
+    <text x="500" y="350" font-family="Arial, sans-serif" font-size="36" fill="#A3A3A3">Navigate Your Stress Journey</text>
+    <text x="500" y="420" font-family="Arial, sans-serif" font-size="24" fill="#737373">Teen Stress Management Platform</text>
+</svg>

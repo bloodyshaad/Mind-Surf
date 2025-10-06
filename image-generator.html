@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindSurf Image Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: #000;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            border: 2px solid #e5e5e5;
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: #000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transform: translateY(-5px);
+        }
+
+        .card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: #000;
+        }
+
+        .card p {
+            color: #666;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .preview {
+            background: #f5f5f5;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 150px;
+        }
+
+        .preview canvas {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+        }
+
+        button {
+            width: 100%;
+            padding: 0.75rem 1.5rem;
+            background: #000;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        button:hover {
+            background: #333;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .success {
+            background: #10b981;
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .success.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .download-all {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .download-all button {
+            background: white;
+            color: #667eea;
+            font-size: 1.1rem;
+            padding: 1rem 2rem;
+        }
+
+        .download-all button:hover {
+            background: #f5f5f5;
+        }
+
+        .info {
+            background: #f0f9ff;
+            border-left: 4px solid #0284c7;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+
+        .info h4 {
+            color: #0c4a6e;
+            margin-bottom: 0.5rem;
+        }
+
+        .info p {
+            color: #0c4a6e;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 MindSurf Image Generator</h1>
+        <p class="subtitle">Generate all icons, favicons, and social media images for the MindSurf platform</p>
+
+        <div class="info">
+            <h4>📋 Instructions</h4>
+            <p>Click on any "Generate & Download" button to create and download that specific image. Use "Download All Images" to get everything at once. All images are optimized for web and mobile use.</p>
+        </div>
+
+        <div class="grid">
+            <!-- App Icons -->
+            <div class="card">
+                <h3>📱 App Icons</h3>
+                <p>PWA icons for all sizes (72px to 512px)</p>
+                <div class="preview" id="preview-icons"></div>
+                <button onclick="generateIcons()">Generate & Download Icons</button>
+            </div>
+
+            <!-- Favicons -->
+            <div class="card">
+                <h3>🔖 Favicons</h3>
+                <p>Browser favicons (16px and 32px)</p>
+                <div class="preview" id="preview-favicon"></div>
+                <button onclick="generateFavicons()">Generate & Download Favicons</button>
+            </div>
+
+            <!-- Apple Touch Icon -->
+            <div class="card">
+                <h3>🍎 Apple Touch Icon</h3>
+                <p>iOS home screen icon (180x180px)</p>
+                <div class="preview" id="preview-apple"></div>
+                <button onclick="generateAppleIcon()">Generate & Download</button>
+            </div>
+
+            <!-- OG Image -->
+            <div class="card">
+                <h3>🌐 Social Media Image</h3>
+                <p>Open Graph image for sharing (1200x630px)</p>
+                <div class="preview" id="preview-og"></div>
+                <button onclick="generateOGImage()">Generate & Download</button>
+            </div>
+
+            <!-- Screenshot 1 -->
+            <div class="card">
+                <h3>📸 Screenshot 1</h3>
+                <p>App screenshot - Quiz interface</p>
+                <div class="preview" id="preview-screenshot1"></div>
+                <button onclick="generateScreenshot(1)">Generate & Download</button>
+            </div>
+
+            <!-- Screenshot 2 -->
+            <div class="card">
+                <h3>📸 Screenshot 2</h3>
+                <p>App screenshot - Results page</p>
+                <div class="preview" id="preview-screenshot2"></div>
+                <button onclick="generateScreenshot(2)">Generate & Download</button>
+            </div>
+        </div>
+
+        <div class="download-all">
+            <button onclick="downloadAllImages()">⬇️ Download All Images (ZIP)</button>
+        </div>
+
+        <div class="success" id="successMessage">
+            ✅ Images generated successfully!
+        </div>
+    </div>
+
+    <script>
+        // Helper function to draw logo
+        function drawLogo(ctx, x, y, size, color = '#FFFFFF') {
+            const scale = size / 50;
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.scale(scale, scale);
+
+            // Circle
+            ctx.beginPath();
+            ctx.arc(25, 24, 15, 0, Math.PI * 2);
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Smile
+            ctx.beginPath();
+            ctx.moveTo(15, 24);
+            ctx.quadraticCurveTo(18, 18, 25, 18);
+            ctx.quadraticCurveTo(32, 18, 35, 24);
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+
+            // Eyes
+            ctx.beginPath();
+            ctx.arc(20, 20, 2, 0, Math.PI * 2);
+            ctx.fillStyle = color;
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.arc(30, 20, 2, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.restore();
+        }
+
+        // Generate App Icons
+        function generateIcons() {
+            const sizes = [72, 96, 128, 144, 152, 192, 384, 512];
+            sizes.forEach(size => {
+                const canvas = document.createElement('canvas');
+                canvas.width = size;
+                canvas.height = size;
+                const ctx = canvas.getContext('2d');
+
+                // Background
+                ctx.fillStyle = '#000000';
+                ctx.fillRect(0, 0, size, size);
+
+                // Logo
+                drawLogo(ctx, size / 2 - (size * 0.4), size / 2 - (size * 0.4), size * 0.8);
+
+                // Download
+                downloadCanvas(canvas, `icon-${size}x${size}.png`);
+            });
+
+            // Show preview
+            const canvas = document.createElement('canvas');
+            canvas.width = 192;
+            canvas.height = 192;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(0, 0, 192, 192);
+            drawLogo(ctx, 192 / 2 - (192 * 0.4), 192 / 2 - (192 * 0.4), 192 * 0.8);
+            document.getElementById('preview-icons').innerHTML = '';
+            document.getElementById('preview-icons').appendChild(canvas);
+
+            showSuccess();
+        }
+
+        // Generate Favicons
+        function generateFavicons() {
+            const sizes = [16, 32];
+            sizes.forEach(size => {
+                const canvas = document.createElement('canvas');
+                canvas.width = size;
+                canvas.height = size;
+                const ctx = canvas.getContext('2d');
+
+                // Background
+                ctx.fillStyle = '#000000';
+                ctx.fillRect(0, 0, size, size);
+
+                // Logo (simplified for small size)
+                const scale = size / 32;
+                ctx.save();
+                ctx.scale(scale, scale);
+
+                ctx.beginPath();
+                ctx.arc(16, 16, 10, 0, Math.PI * 2);
+                ctx.strokeStyle = '#FFFFFF';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(10, 16);
+                ctx.quadraticCurveTo(12, 12, 16, 12);
+                ctx.quadraticCurveTo(20, 12, 22, 16);
+                ctx.strokeStyle = '#FFFFFF';
+                ctx.lineWidth = 1.5;
+                ctx.lineCap = 'round';
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.arc(13, 14, 1.5, 0, Math.PI * 2);
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.arc(19, 14, 1.5, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.restore();
+
+                downloadCanvas(canvas, `favicon-${size}x${size}.png`);
+            });
+
+            // Show preview
+            const canvas = document.createElement('canvas');
+            canvas.width = 32;
+            canvas.height = 32;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(0, 0, 32, 32);
+            
+            ctx.beginPath();
+            ctx.arc(16, 16, 10, 0, Math.PI * 2);
+            ctx.strokeStyle = '#FFFFFF';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(10, 16);
+            ctx.quadraticCurveTo(12, 12, 16, 12);
+            ctx.quadraticCurveTo(20, 12, 22, 16);
+            ctx.strokeStyle = '#FFFFFF';
+            ctx.lineWidth = 1.5;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(13, 14, 1.5, 0, Math.PI * 2);
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.arc(19, 14, 1.5, 0, Math.PI * 2);
+            ctx.fill();
+
+            document.getElementById('preview-favicon').innerHTML = '';
+            document.getElementById('preview-favicon').appendChild(canvas);
+
+            showSuccess();
+        }
+
+        // Generate Apple Touch Icon
+        function generateAppleIcon() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 180;
+            canvas.height = 180;
+            const ctx = canvas.getContext('2d');
+
+            // Background
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(0, 0, 180, 180);
+
+            // Logo
+            drawLogo(ctx, 40, 40, 100);
+
+            // Text
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = 'bold 24px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('MindSurf', 90, 155);
+
+            // Download
+            downloadCanvas(canvas, 'apple-touch-icon.png');
+
+            // Show preview
+            document.getElementById('preview-apple').innerHTML = '';
+            document.getElementById('preview-apple').appendChild(canvas);
+
+            showSuccess();
+        }
+
+        // Generate OG Image
+        function generateOGImage() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 1200;
+            canvas.height = 630;
+            const ctx = canvas.getContext('2d');
+
+            // Background
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(0, 0, 1200, 630);
+
+            // Background circles
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
+            ctx.beginPath();
+            ctx.arc(100, 100, 150, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.arc(1100, 530, 200, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.arc(600, 315, 250, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Logo
+            drawLogo(ctx, 220, 235, 160);
+
+            // Text
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = 'bold 72px Arial';
+            ctx.fillText('MindSurf', 500, 280);
+
+            ctx.fillStyle = '#A3A3A3';
+            ctx.font = '36px Arial';
+            ctx.fillText('Navigate Your Stress Journey', 500, 350);
+
+            ctx.fillStyle = '#737373';
+            ctx.font = '24px Arial';
+            ctx.fillText('Teen Stress Management Platform', 500, 420);
+
+            // Download
+            downloadCanvas(canvas, 'og-image.png');
+
+            // Show preview (scaled down)
+            const previewCanvas = document.createElement('canvas');
+            previewCanvas.width = 300;
+            previewCanvas.height = 157.5;
+            const previewCtx = previewCanvas.getContext('2d');
+            previewCtx.drawImage(canvas, 0, 0, 300, 157.5);
+            document.getElementById('preview-og').innerHTML = '';
+            document.getElementById('preview-og').appendChild(previewCanvas);
+
+            showSuccess();
+        }
+
+        // Generate Screenshots
+        function generateScreenshot(number) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 1280;
+            canvas.height = 720;
+            const ctx = canvas.getContext('2d');
+
+            // Background
+            ctx.fillStyle = '#FAFAFA';
+            ctx.fillRect(0, 0, 1280, 720);
+
+            // Header
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(0, 0, 1280, 80);
+
+            // Logo in header
+            drawLogo(ctx, 40, 20, 40);
+
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = 'bold 24px Arial';
+            ctx.fillText('MindSurf', 100, 50);
+
+            // Title
+            const titles = {
+                1: 'Interactive Stress Quiz',
+                2: 'Personalized Results & Solutions'
+            };
+
+            ctx.fillStyle = '#000000';
+            ctx.font = 'bold 48px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(titles[number], 640, 200);
+
+            // Card
+            ctx.fillStyle = '#FFFFFF';
+            ctx.strokeStyle = '#E5E5E5';
+            ctx.lineWidth = 2;
+            roundRect(ctx, 240, 250, 800, 400, 16);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.textAlign = 'left';
+
+            if (number === 1) {
+                // Quiz content
+                ctx.fillStyle = '#000000';
+                ctx.font = '600 20px Arial';
+                ctx.fillText('How often do you feel overwhelmed?', 280, 300);
+
+                // Options
+                ctx.fillStyle = '#F5F5F5';
+                ctx.strokeStyle = '#D4D4D4';
+                roundRect(ctx, 280, 330, 720, 60, 8);
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.fillStyle = '#525252';
+                ctx.font = '16px Arial';
+                ctx.fillText('Rarely or never', 300, 365);
+
+                ctx.fillStyle = '#F5F5F5';
+                roundRect(ctx, 280, 410, 720, 60, 8);
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.fillStyle = '#525252';
+                ctx.fillText('Sometimes (1-2 times per week)', 300, 445);
+
+                ctx.fillStyle = '#000000';
+                roundRect(ctx, 280, 490, 720, 60, 8);
+                ctx.fill();
+
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fillText('Often (3-4 times per week)', 300, 525);
+            } else {
+                // Results content
+                ctx.strokeStyle = '#000000';
+                ctx.lineWidth = 8;
+                ctx.beginPath();
+                ctx.arc(640, 400, 80, 0, Math.PI * 2);
+                ctx.stroke();
+
+                ctx.fillStyle = '#000000';
+                ctx.font = 'bold 48px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('65%', 640, 415);
+
+                ctx.fillStyle = '#525252';
+                ctx.font = '24px Arial';
+                ctx.fillText('Moderate Stress Level', 640, 500);
+
+                // Recommendation box
+                ctx.fillStyle = '#F0F9FF';
+                ctx.strokeStyle = '#0284C7';
+                ctx.lineWidth = 2;
+                roundRect(ctx, 280, 540, 720, 80, 8);
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.fillStyle = '#0C4A6E';
+                ctx.font = '600 16px Arial';
+                ctx.textAlign = 'left';
+                ctx.fillText('Recommended Actions', 300, 575);
+
+                ctx.font = '14px Arial';
+                ctx.fillText('✓ Practice daily stress-reduction techniques', 300, 600);
+            }
+
+            // Download
+            downloadCanvas(canvas, `screenshot${number}.png`);
+
+            // Show preview (scaled down)
+            const previewCanvas = document.createElement('canvas');
+            previewCanvas.width = 320;
+            previewCanvas.height = 180;
+            const previewCtx = previewCanvas.getContext('2d');
+            previewCtx.drawImage(canvas, 0, 0, 320, 180);
+            document.getElementById(`preview-screenshot${number}`).innerHTML = '';
+            document.getElementById(`preview-screenshot${number}`).appendChild(previewCanvas);
+
+            showSuccess();
+        }
+
+        // Helper function to draw rounded rectangle
+        function roundRect(ctx, x, y, width, height, radius) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+        }
+
+        // Download canvas as image
+        function downloadCanvas(canvas, filename) {
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        // Download all images
+        function downloadAllImages() {
+            generateIcons();
+            setTimeout(() => generateFavicons(), 500);
+            setTimeout(() => generateAppleIcon(), 1000);
+            setTimeout(() => generateOGImage(), 1500);
+            setTimeout(() => generateScreenshot(1), 2000);
+            setTimeout(() => generateScreenshot(2), 2500);
+            
+            setTimeout(() => {
+                alert('✅ All images have been generated and downloaded!\n\nCheck your Downloads folder for all the files.');
+            }, 3000);
+        }
+
+        // Show success message
+        function showSuccess() {
+            const msg = document.getElementById('successMessage');
+            msg.classList.add('show');
+            setTimeout(() => {
+                msg.classList.remove('show');
+            }, 3000);
+        }
+
+        // Generate previews on load
+        window.addEventListener('load', () => {
+            // Generate preview for icons
+            const canvas = document.createElement('canvas');
+            canvas.width = 128;
+            canvas.height = 128;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(0, 0, 128, 128);
+            drawLogo(ctx, 128 / 2 - (128 * 0.4), 128 / 2 - (128 * 0.4), 128 * 0.8);
+            document.getElementById('preview-icons').appendChild(canvas);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="180" height="180" rx="40" fill="#000000"/>
+    <circle cx="90" cy="90" r="50" stroke="#FFFFFF" stroke-width="6"/>
+    <path d="M60 90C60 90 70 70 90 70C110 70 120 90 120 90" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round"/>
+    <circle cx="75" cy="80" r="6" fill="#FFFFFF"/>
+    <circle cx="105" cy="80" r="6" fill="#FFFFFF"/>
+    <text x="90" y="145" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#FFFFFF" text-anchor="middle">MindSurf</text>
+</svg>

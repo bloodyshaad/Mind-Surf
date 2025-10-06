@@ -1,0 +1,22 @@
+{
+  "name": "mind-surf",
+  "version": "1.0.0",
+  "description": "MindSurf - Navigate Your Stress Journey",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "generate-images": "node generate-images.js"
+  },
+  "keywords": [
+    "stress",
+    "mental-health",
+    "teens",
+    "wellness"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

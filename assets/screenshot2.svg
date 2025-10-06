@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1280" height="720" viewBox="0 0 1280 720" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1280" height="720" fill="#FAFAFA"/>
+    
+    <!-- Header -->
+    <rect width="1280" height="80" fill="#000000"/>
+    <circle cx="60" cy="40" r="20" stroke="#FFFFFF" stroke-width="2"/>
+    <path d="M50 40C50 40 53 35 60 35C67 35 70 40 70 40" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+    <text x="100" y="50" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#FFFFFF">MindSurf</text>
+    
+    <!-- Content -->
+    <text x="640" y="200" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#000000" text-anchor="middle">Personalized Results & Solutions</text>
+    
+    <!-- Card -->
+    <rect x="240" y="250" width="800" height="400" rx="16" fill="#FFFFFF" stroke="#E5E5E5" stroke-width="2"/>
+    
+    
+    <!-- Results Content -->
+    <circle cx="640" cy="400" r="80" fill="none" stroke="#000000" stroke-width="8"/>
+    <text x="640" y="415" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#000000" text-anchor="middle">65%</text>
+    <text x="640" y="500" font-family="Arial, sans-serif" font-size="24" fill="#525252" text-anchor="middle">Moderate Stress Level</text>
+    <rect x="280" y="540" width="720" height="80" rx="8" fill="#F0F9FF" stroke="#0284C7" stroke-width="2"/>
+    <text x="300" y="575" font-family="Arial, sans-serif" font-size="16" font-weight="600" fill="#0C4A6E">Recommended Actions</text>
+    <text x="300" y="600" font-family="Arial, sans-serif" font-size="14" fill="#0C4A6E">✓ Practice daily stress-reduction techniques</text>
+    
+</svg>

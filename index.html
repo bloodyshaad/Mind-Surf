@@ -39,6 +39,10 @@
     <!-- Stylesheets -->
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/animations.css">
+    <link rel="stylesheet" href="styles/history.css">
+    <link rel="stylesheet" href="styles/toast.css">
+    <link rel="stylesheet" href="styles/skeleton.css">
+    <link rel="stylesheet" href="styles/feedback.css">
     
     <!-- Preconnect for performance -->
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
@@ -61,6 +65,7 @@
                 <div class="nav-links">
                     <a href="#home" class="nav-link active">Home</a>
                     <a href="#quiz" class="nav-link">Stress Quiz</a>
+                    <a href="#history" class="nav-link" id="historyNavLink" style="display: none;">History</a>
                     <a href="#understanding" class="nav-link">Understanding Stress</a>
                     <a href="#solutions" class="nav-link">Solutions</a>
                     <div class="dark-mode-toggle" id="darkModeToggle">
@@ -82,6 +87,7 @@
         <div class="mobile-menu" id="mobileMenu">
             <a href="#home" class="mobile-link">Home</a>
             <a href="#quiz" class="mobile-link">Stress Quiz</a>
+            <a href="#history" class="mobile-link" id="historyNavLinkMobile" style="display: none;">History</a>
             <a href="#understanding" class="mobile-link">Understanding Stress</a>
             <a href="#solutions" class="mobile-link">Solutions</a>
             <a href="login.html" id="authBtnMobile" class="btn-primary">Login</a>
@@ -127,6 +133,24 @@
             <div class="scroll-indicator">
                 <div class="scroll-line"></div>
                 <span>Scroll to explore</span>
+            </div>
+        </section>
+
+        <!-- History Section -->
+        <section id="history" class="quiz-section" style="display: none;">
+            <div class="section-container">
+                <div class="section-header">
+                    <span class="section-label">Your Progress</span>
+                    <h2 class="section-title">Quiz History</h2>
+                    <p class="section-description">Track your stress levels over time and see how you're progressing with your stress management journey.</p>
+                </div>
+                
+                <div id="historyContent" class="quiz-content">
+                    <div class="loading-container">
+                        <div class="loading-spinner-large"></div>
+                        <p class="loading-text">Loading your history...</p>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -689,8 +713,11 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/config.js"></script>
+    <script src="js/toast.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/quiz.js"></script>
+    <script src="js/history.js"></script>
+    <script src="js/feedback.js"></script>
     <script src="js/animations.js"></script>
     <script src="js/main.js"></script>
 </body>

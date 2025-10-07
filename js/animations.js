@@ -83,10 +83,9 @@ class AnimationManager {
     setupNavbarScroll() {
         const navbar = document.querySelector('.navbar');
         let lastScroll = 0;
+        let ticking = false;
 
-        window.addEventListener('scroll', () => {
-            const currentScroll = window.pageYOffset;
-
+        const updateNavbar = (currentScroll) => {
             if (currentScroll > 100) {
                 navbar.classList.add('scrolled');
             } else {
@@ -101,7 +100,17 @@ class AnimationManager {
             }
 
             lastScroll = currentScroll;
-        });
+            ticking = false;
+        };
+
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            
+            if (!ticking) {
+                requestAnimationFrame(() => updateNavbar(currentScroll));
+                ticking = true;
+            }
+        }, { passive: true });
     }
 
     setupSmoothScroll() {
@@ -114,10 +123,12 @@ class AnimationManager {
                 const target = document.querySelector(href);
                 
                 if (target) {
-                    const offsetTop = target.offsetTop - 80;
-                    window.scrollTo({
-                        top: offsetTop,
-                        behavior: 'smooth'
+                    requestAnimationFrame(() => {
+                        const offsetTop = target.offsetTop - 80;
+                        window.scrollTo({
+                            top: offsetTop,
+                            behavior: 'smooth'
+                        });
                     });
 
                     // Update active nav link
@@ -135,40 +146,72 @@ class AnimationManager {
             });
         });
 
-        // Update active nav on scroll
-        window.addEventListener('scroll', () => {
+        // Cache section positions
+        let sectionPositions = [];
+        let ticking = false;
+
+        const cacheSectionPositions = () => {
             const sections = document.querySelectorAll('section[id]');
+            sectionPositions = Array.from(sections).map(section => ({
+                id: section.getAttribute('id'),
+                top: section.offsetTop,
+                height: section.offsetHeight
+            }));
+        };
+
+        // Cache positions on load and resize
+        cacheSectionPositions();
+        window.addEventListener('resize', () => {
+            clearTimeout(this.resizeTimeout);
+            this.resizeTimeout = setTimeout(cacheSectionPositions, 200);
+        });
+
+        // Update active nav on scroll with throttling
+        const updateActiveNav = () => {
             const scrollPosition = window.pageYOffset + 150;
 
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                const sectionHeight = section.offsetHeight;
-                const sectionId = section.getAttribute('id');
-
-                if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+            for (const section of sectionPositions) {
+                if (scrollPosition >= section.top && scrollPosition < section.top + section.height) {
                     document.querySelectorAll('.nav-link').forEach(link => {
                         link.classList.remove('active');
-                        if (link.getAttribute('href') === `#${sectionId}`) {
+                        if (link.getAttribute('href') === `#${section.id}`) {
                             link.classList.add('active');
                         }
                     });
+                    break;
                 }
-            });
-        });
+            }
+            ticking = false;
+        };
+
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(updateActiveNav);
+                ticking = true;
+            }
+        }, { passive: true });
     }
 
     setupParallax() {
         const shapes = document.querySelectorAll('.floating-shape');
+        let ticking = false;
         
-        window.addEventListener('scroll', () => {
-            const scrolled = window.pageYOffset;
-            
+        const updateParallax = (scrolled) => {
             shapes.forEach((shape, index) => {
                 const speed = 0.5 + (index * 0.1);
                 const yPos = -(scrolled * speed);
                 shape.style.transform = `translateY(${yPos}px)`;
             });
-        });
+            ticking = false;
+        };
+
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                const scrolled = window.pageYOffset;
+                requestAnimationFrame(() => updateParallax(scrolled));
+                ticking = true;
+            }
+        }, { passive: true });
     }
 
     setupHoverEffects() {

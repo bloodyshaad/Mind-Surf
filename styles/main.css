@@ -76,7 +76,7 @@
 
 html {
     scroll-behavior: smooth;
-    font-size: 14px;
+    font-size: 16px;
 }
 
 body {
@@ -154,7 +154,7 @@ body {
 .nav-container {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 1.25rem 2rem;
+    padding: 1rem 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -164,15 +164,15 @@ body {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    font-size: 1.5rem;
+    font-size: 1.35rem;
     font-weight: 700;
     color: var(--color-black);
     text-decoration: none;
 }
 
 .logo-icon {
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
     color: var(--color-black);
 }
 
@@ -318,7 +318,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 8rem 2rem 4rem;
+    padding: 6rem 2rem 3rem;
     overflow: hidden;
 }
 
@@ -379,10 +379,10 @@ body {
 
 .hero-title {
     font-family: var(--font-display);
-    font-size: clamp(3rem, 8vw, 6rem);
+    font-size: clamp(2rem, 6vw, 3.5rem);
     font-weight: 800;
     line-height: 1.1;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
     letter-spacing: -0.03em;
 }
 
@@ -398,11 +398,11 @@ body {
 }
 
 .hero-description {
-    font-size: 1.15rem;
-    line-height: 1.8;
+    font-size: 1rem;
+    line-height: 1.6;
     color: var(--color-gray-600);
-    max-width: 800px;
-    margin: 0 auto 3rem;
+    max-width: 700px;
+    margin: 0 auto 2rem;
     font-weight: 400;
 }
 
@@ -418,10 +418,10 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 3rem;
-    padding: 2rem;
+    gap: 2.5rem;
+    padding: 1.5rem;
     background-color: var(--color-gray-50);
-    border-radius: 16px;
+    border-radius: 12px;
     border: 1px solid var(--color-gray-200);
     flex-wrap: wrap;
 }
@@ -431,7 +431,7 @@ body {
 }
 
 .stat-number {
-    font-size: 3rem;
+    font-size: 2rem;
     font-weight: 800;
     color: var(--color-black);
     font-family: var(--font-display);
@@ -478,7 +478,7 @@ body {
 
 /* Section Styles */
 section {
-    padding: 4rem 2rem;
+    padding: 3rem 2rem;
 }
 
 .section-container {
@@ -488,7 +488,7 @@ section {
 
 .section-header {
     text-align: center;
-    margin-bottom: 3rem;
+    margin-bottom: 2.5rem;
 }
 
 .section-label {
@@ -506,19 +506,19 @@ section {
 
 .section-title {
     font-family: var(--font-display);
-    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
     font-weight: 800;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     letter-spacing: -0.02em;
     line-height: 1.2;
 }
 
 .section-description {
-    font-size: 1.15rem;
+    font-size: 1rem;
     color: var(--color-gray-600);
-    max-width: 700px;
+    max-width: 650px;
     margin: 0 auto;
-    line-height: 1.7;
+    line-height: 1.6;
 }
 
 /* Quiz Section */
@@ -568,8 +568,8 @@ section {
 
 .quiz-container {
     background-color: var(--color-white);
-    border-radius: 16px;
-    padding: 3rem;
+    border-radius: 12px;
+    padding: 2rem;
     box-shadow: var(--shadow-lg);
 }
 
@@ -604,9 +604,9 @@ section {
 }
 
 .question-text {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     font-weight: 700;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
     line-height: 1.4;
 }
 
@@ -617,13 +617,13 @@ section {
 }
 
 .quiz-option {
-    padding: 1.5rem;
+    padding: 1rem;
     background-color: var(--color-white);
     border: 2px solid var(--color-gray-300);
-    border-radius: 12px;
+    border-radius: 10px;
     cursor: pointer;
     transition: var(--transition-smooth);
-    font-size: 1.05rem;
+    font-size: 0.95rem;
     text-align: left;
 }
 
@@ -663,7 +663,7 @@ section {
 }
 
 .results-score {
-    font-size: 4rem;
+    font-size: 3rem;
     font-weight: 800;
     color: var(--text-primary);
     margin-bottom: 0.5rem;
@@ -700,7 +700,7 @@ section {
 }
 
 .category-score {
-    font-size: 2.5rem;
+    font-size: 2rem;
     font-weight: 800;
     color: var(--text-primary);
 }
@@ -898,8 +898,8 @@ section {
 .effect-card {
     background-color: var(--color-white);
     border: 2px solid var(--color-gray-200);
-    border-radius: 16px;
-    padding: 2.5rem;
+    border-radius: 12px;
+    padding: 2rem;
     transition: var(--transition-smooth);
 }
 
@@ -910,9 +910,9 @@ section {
 }
 
 .effect-icon {
-    width: 80px;
-    height: 80px;
-    margin-bottom: 1.5rem;
+    width: 64px;
+    height: 64px;
+    margin-bottom: 1.25rem;
     color: var(--color-black);
 }
 
@@ -922,16 +922,16 @@ section {
 }
 
 .effect-title {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
     font-weight: 700;
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
 }
 
 .effect-description {
     color: var(--color-gray-600);
-    margin-bottom: 1.5rem;
-    line-height: 1.7;
-    font-size: 1.05rem;
+    margin-bottom: 1.25rem;
+    line-height: 1.6;
+    font-size: 0.95rem;
 }
 
 .effect-list {
@@ -962,8 +962,8 @@ section {
 /* Stress Cycle */
 .stress-cycle {
     background-color: var(--color-gray-50);
-    border-radius: 16px;
-    padding: 3rem;
+    border-radius: 12px;
+    padding: 2.5rem;
     border: 1px solid var(--color-gray-200);
 }
 
@@ -1064,8 +1064,8 @@ section {
 .solution-card {
     background-color: var(--color-white);
     border: 2px solid var(--color-gray-200);
-    border-radius: 16px;
-    padding: 2.5rem;
+    border-radius: 12px;
+    padding: 2rem;
     position: relative;
     transition: var(--transition-smooth);
 }
@@ -1087,9 +1087,9 @@ section {
 }
 
 .solution-icon {
-    width: 70px;
-    height: 70px;
-    margin-bottom: 1.5rem;
+    width: 60px;
+    height: 60px;
+    margin-bottom: 1.25rem;
     color: var(--color-black);
 }
 
@@ -1099,16 +1099,16 @@ section {
 }
 
 .solution-title {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
     font-weight: 700;
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
 }
 
 .solution-description {
     color: var(--color-gray-600);
-    margin-bottom: 1.5rem;
-    line-height: 1.7;
-    font-size: 1.05rem;
+    margin-bottom: 1.25rem;
+    line-height: 1.6;
+    font-size: 0.95rem;
 }
 
 .solution-techniques {
@@ -1160,8 +1160,8 @@ section {
 .action-plan {
     background-color: var(--text-primary);
     color: var(--bg-primary);
-    border-radius: 16px;
-    padding: 3rem;
+    border-radius: 12px;
+    padding: 2.5rem;
     border: 2px solid var(--text-primary);
     transition: var(--transition-smooth);
 }

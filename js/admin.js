@@ -121,8 +121,17 @@ class AdminDashboard {
         const logoutBtn = document.getElementById('adminAuthBtn');
         if (logoutBtn) {
             logoutBtn.addEventListener('click', async () => {
-                await supabase.auth.signOut();
-                window.location.href = 'index.html';
+                try {
+                    await supabase.auth.signOut({ scope: 'local' });
+                } catch (error) {
+                    // Silently handle sign out errors
+                }
+                
+                // Clear Supabase-related storage
+                this.clearSupabaseStorage();
+                
+                // Redirect to home page
+                window.location.replace('index.html');
             });
         }
 
@@ -288,10 +297,10 @@ class AdminDashboard {
 
     async fetchOverviewStats() {
         try {
-            // Fetch users
+            // Fetch users with age data
             const { data: users, error: usersError } = await supabase
                 .from('users')
-                .select('created_at');
+                .select('created_at, age');
 
             // Fetch quiz results
             const { data: quizzes, error: quizzesError } = await supabase
@@ -350,6 +359,10 @@ class AdminDashboard {
     }
 
     async renderOverviewCharts(stats) {
+        // Get current theme
+        const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark';
+        const textColor = isDarkMode ? '#FFFFFF' : '#000000';
+        
         // Stress Distribution Pie Chart
         const stressLevels = { Low: 0, Mild: 0, Moderate: 0, High: 0, Severe: 0 };
         stats.allQuizzes.forEach(q => {
@@ -365,26 +378,77 @@ class AdminDashboard {
         this.charts.stressDistribution = new Chart(
             document.getElementById('stressDistributionChart'),
             {
-                type: 'pie',
+                type: 'doughnut',
                 data: {
                     labels: stressLabels,
                     datasets: [{
                         data: stressData,
-                        backgroundColor: hasStressData ? ['#E8F5E9', '#F1F8E9', '#FFF9C4', '#FFE0B2', '#FFEBEE'] : ['#E5E5E5', '#D4D4D4', '#C3C3C3', '#B2B2B2', '#A1A1A1'],
-                        borderColor: hasStressData ? ['#2D5016', '#4A7C2C', '#8B7500', '#B54708', '#C41E3A'] : ['#999999', '#888888', '#777777', '#666666', '#555555'],
-                        borderWidth: 2
+                        backgroundColor: hasStressData ? [
+                            '#10B981', // Emerald green for Low
+                            '#3B82F6', // Blue for Mild
+                            '#F59E0B', // Amber for Moderate
+                            '#EF4444', // Red for High
+                            '#DC2626'  // Dark red for Severe
+                        ] : ['#E5E5E5', '#D4D4D4', '#C3C3C3', '#B2B2B2', '#A1A1A1'],
+                        borderColor: isDarkMode ? '#1A1A1A' : '#FFFFFF',
+                        borderWidth: 4,
+                        hoverOffset: 20,
+                        hoverBorderWidth: 5
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    cutout: '65%',
                     plugins: {
                         legend: {
-                            position: 'bottom'
+                            position: 'bottom',
+                            labels: {
+                                color: textColor,
+                                padding: 20,
+                                font: {
+                                    size: 14,
+                                    weight: '600',
+                                    family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+                                },
+                                usePointStyle: true,
+                                pointStyle: 'circle',
+                                boxWidth: 10,
+                                boxHeight: 10
+                            }
                         },
                         tooltip: {
-                            enabled: hasStressData
+                            enabled: hasStressData,
+                            backgroundColor: isDarkMode ? 'rgba(26, 26, 26, 0.95)' : 'rgba(255, 255, 255, 0.95)',
+                            titleColor: textColor,
+                            bodyColor: textColor,
+                            borderColor: isDarkMode ? '#333333' : '#E5E5E5',
+                            borderWidth: 2,
+                            padding: 16,
+                            cornerRadius: 12,
+                            titleFont: {
+                                size: 15,
+                                weight: 'bold'
+                            },
+                            bodyFont: {
+                                size: 14
+                            },
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.parsed || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = ((value / total) * 100).toFixed(1);
+                                    return `${label}: ${value} (${percentage}%)`;
+                                }
+                            }
                         }
+                    },
+                    animation: {
+                        animateRotate: true,
+                        animateScale: true,
+                        duration: 1200,
+                        easing: 'easeInOutQuart'
                     }
                 }
             }
@@ -402,26 +466,74 @@ class AdminDashboard {
         this.charts.quizTrend = new Chart(
             document.getElementById('quizTrendChart'),
             {
-                type: 'pie',
+                type: 'doughnut',
                 data: {
                     labels: quizStatusLabels,
                     datasets: [{
                         data: quizStatusData,
-                        backgroundColor: hasQuizData ? ['#000000', '#E5E5E5'] : ['#E5E5E5', '#D4D4D4'],
-                        borderColor: hasQuizData ? ['#000000', '#999999'] : ['#999999', '#888888'],
-                        borderWidth: 2
+                        backgroundColor: hasQuizData ? [
+                            '#8B5CF6', // Purple for Completed
+                            '#EC4899'  // Pink for Pending
+                        ] : ['#E5E5E5', '#D4D4D4'],
+                        borderColor: isDarkMode ? '#1A1A1A' : '#FFFFFF',
+                        borderWidth: 4,
+                        hoverOffset: 20,
+                        hoverBorderWidth: 5
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    cutout: '65%',
                     plugins: {
                         legend: {
-                            position: 'bottom'
+                            position: 'bottom',
+                            labels: {
+                                color: textColor,
+                                padding: 20,
+                                font: {
+                                    size: 14,
+                                    weight: '600',
+                                    family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+                                },
+                                usePointStyle: true,
+                                pointStyle: 'circle',
+                                boxWidth: 10,
+                                boxHeight: 10
+                            }
                         },
                         tooltip: {
-                            enabled: hasQuizData
+                            enabled: hasQuizData,
+                            backgroundColor: isDarkMode ? 'rgba(26, 26, 26, 0.95)' : 'rgba(255, 255, 255, 0.95)',
+                            titleColor: textColor,
+                            bodyColor: textColor,
+                            borderColor: isDarkMode ? '#333333' : '#E5E5E5',
+                            borderWidth: 2,
+                            padding: 16,
+                            cornerRadius: 12,
+                            titleFont: {
+                                size: 15,
+                                weight: 'bold'
+                            },
+                            bodyFont: {
+                                size: 14
+                            },
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.parsed || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = ((value / total) * 100).toFixed(1);
+                                    return `${label}: ${value} (${percentage}%)`;
+                                }
+                            }
                         }
+                    },
+                    animation: {
+                        animateRotate: true,
+                        animateScale: true,
+                        duration: 1200,
+                        easing: 'easeInOutQuart'
                     }
                 }
             }
@@ -459,26 +571,76 @@ class AdminDashboard {
         this.charts.categories = new Chart(
             document.getElementById('categoriesChart'),
             {
-                type: 'pie',
+                type: 'doughnut',
                 data: {
                     labels: categoryChartLabels,
                     datasets: [{
                         data: categoryData,
-                        backgroundColor: hasCategoryData ? ['#000000', '#404040', '#737373', '#A3A3A3', '#D4D4D4', '#E5E5E5'] : ['#E5E5E5', '#D4D4D4', '#C3C3C3', '#B2B2B2', '#A1A1A1', '#909090'],
-                        borderColor: hasCategoryData ? ['#000000', '#404040', '#737373', '#A3A3A3', '#D4D4D4', '#E5E5E5'] : ['#999999', '#888888', '#777777', '#666666', '#555555', '#444444'],
-                        borderWidth: 2
+                        backgroundColor: hasCategoryData ? [
+                            '#3B82F6',   // Bright Blue - Academic
+                            '#8B5CF6',   // Vibrant Purple - Social
+                            '#EC4899',   // Hot Pink - Family
+                            '#F59E0B',   // Amber Orange - Personal
+                            '#10B981',   // Emerald Green - Physical
+                            '#EAB308'    // Yellow - Lifestyle
+                        ] : ['#E5E5E5', '#D4D4D4', '#C3C3C3', '#B2B2B2', '#A1A1A1', '#909090'],
+                        borderColor: isDarkMode ? '#1A1A1A' : '#FFFFFF',
+                        borderWidth: 4,
+                        hoverOffset: 20,
+                        hoverBorderWidth: 5
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    cutout: '65%',
                     plugins: {
                         legend: {
-                            position: 'bottom'
+                            position: 'bottom',
+                            labels: {
+                                color: textColor,
+                                padding: 20,
+                                font: {
+                                    size: 14,
+                                    weight: '600',
+                                    family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+                                },
+                                usePointStyle: true,
+                                pointStyle: 'circle',
+                                boxWidth: 10,
+                                boxHeight: 10
+                            }
                         },
                         tooltip: {
-                            enabled: hasCategoryData
+                            enabled: hasCategoryData,
+                            backgroundColor: isDarkMode ? 'rgba(26, 26, 26, 0.95)' : 'rgba(255, 255, 255, 0.95)',
+                            titleColor: textColor,
+                            bodyColor: textColor,
+                            borderColor: isDarkMode ? '#333333' : '#E5E5E5',
+                            borderWidth: 2,
+                            padding: 16,
+                            cornerRadius: 12,
+                            titleFont: {
+                                size: 15,
+                                weight: 'bold'
+                            },
+                            bodyFont: {
+                                size: 14
+                            },
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.parsed || 0;
+                                    return `${label}: ${value}%`;
+                                }
+                            }
                         }
+                    },
+                    animation: {
+                        animateRotate: true,
+                        animateScale: true,
+                        duration: 1200,
+                        easing: 'easeInOutQuart'
                     }
                 }
             }
@@ -504,26 +666,74 @@ class AdminDashboard {
         this.charts.userGrowth = new Chart(
             document.getElementById('userGrowthChart'),
             {
-                type: 'pie',
+                type: 'doughnut',
                 data: {
                     labels: userGrowthLabels,
                     datasets: [{
                         data: userGrowthData,
-                        backgroundColor: hasUserData ? ['#000000', '#E5E5E5'] : ['#E5E5E5', '#D4D4D4'],
-                        borderColor: hasUserData ? ['#000000', '#999999'] : ['#999999', '#888888'],
-                        borderWidth: 2
+                        backgroundColor: hasUserData ? [
+                            '#06B6D4', // Cyan for New Users
+                            '#14B8A6'  // Teal for Existing Users
+                        ] : ['#E5E5E5', '#D4D4D4'],
+                        borderColor: isDarkMode ? '#1A1A1A' : '#FFFFFF',
+                        borderWidth: 4,
+                        hoverOffset: 20,
+                        hoverBorderWidth: 5
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    cutout: '65%',
                     plugins: {
                         legend: {
-                            position: 'bottom'
+                            position: 'bottom',
+                            labels: {
+                                color: textColor,
+                                padding: 20,
+                                font: {
+                                    size: 14,
+                                    weight: '600',
+                                    family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+                                },
+                                usePointStyle: true,
+                                pointStyle: 'circle',
+                                boxWidth: 10,
+                                boxHeight: 10
+                            }
                         },
                         tooltip: {
-                            enabled: hasUserData
+                            enabled: hasUserData,
+                            backgroundColor: isDarkMode ? 'rgba(26, 26, 26, 0.95)' : 'rgba(255, 255, 255, 0.95)',
+                            titleColor: textColor,
+                            bodyColor: textColor,
+                            borderColor: isDarkMode ? '#333333' : '#E5E5E5',
+                            borderWidth: 2,
+                            padding: 16,
+                            cornerRadius: 12,
+                            titleFont: {
+                                size: 15,
+                                weight: 'bold'
+                            },
+                            bodyFont: {
+                                size: 14
+                            },
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.parsed || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = ((value / total) * 100).toFixed(1);
+                                    return `${label}: ${value} (${percentage}%)`;
+                                }
+                            }
                         }
+                    },
+                    animation: {
+                        animateRotate: true,
+                        animateScale: true,
+                        duration: 1200,
+                        easing: 'easeInOutQuart'
                     }
                 }
             }
@@ -731,6 +941,11 @@ class AdminDashboard {
     }
 
     async renderAnalyticsCharts(stats) {
+        // Get current theme colors
+        const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark';
+        const textColor = isDarkMode ? '#FFFFFF' : '#000000';
+        const borderColor = isDarkMode ? '#333333' : '#FFFFFF';
+        
         // Category Trends Pie Chart
         const categories = ['academic', 'social', 'family', 'personal', 'physical', 'lifestyle'];
         const categoryLabels = {
@@ -763,58 +978,165 @@ class AdminDashboard {
         const categoryTrendLabels = hasCategoryTrendData ? categories.map(cat => categoryLabels[cat]) : ['No Data', 'No Data', 'No Data', 'No Data', 'No Data', 'No Data'];
 
         new Chart(document.getElementById('categoryTrendsChart'), {
-            type: 'pie',
+            type: 'doughnut',
             data: {
                 labels: categoryTrendLabels,
                 datasets: [{
                     data: categoryTrendData,
-                    backgroundColor: hasCategoryTrendData ? ['#000000', '#404040', '#737373', '#A3A3A3', '#D4D4D4', '#E5E5E5'] : ['#E5E5E5', '#D4D4D4', '#C3C3C3', '#B2B2B2', '#A1A1A1', '#909090'],
-                    borderColor: hasCategoryTrendData ? ['#000000', '#404040', '#737373', '#A3A3A3', '#D4D4D4', '#E5E5E5'] : ['#999999', '#888888', '#777777', '#666666', '#555555', '#444444'],
-                    borderWidth: 2
+                    backgroundColor: hasCategoryTrendData ? [
+                        '#3B82F6',   // Bright Blue - Academic
+                        '#8B5CF6',   // Vibrant Purple - Social
+                        '#EC4899',   // Hot Pink - Family
+                        '#F59E0B',   // Amber Orange - Personal
+                        '#10B981',   // Emerald Green - Physical
+                        '#EAB308'    // Yellow - Lifestyle
+                    ] : ['#E5E5E5', '#D4D4D4', '#C3C3C3', '#B2B2B2', '#A1A1A1', '#909090'],
+                    borderColor: isDarkMode ? '#1A1A1A' : '#FFFFFF',
+                    borderWidth: 4,
+                    hoverOffset: 20,
+                    hoverBorderWidth: 5
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                cutout: '65%',
                 plugins: {
                     legend: {
-                        position: 'bottom'
+                        position: 'bottom',
+                        labels: {
+                            color: textColor,
+                            padding: 20,
+                            font: {
+                                size: 14,
+                                weight: '600',
+                                family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+                            },
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            boxWidth: 10,
+                            boxHeight: 10
+                        }
                     },
                     tooltip: {
-                        enabled: hasCategoryTrendData
+                        enabled: hasCategoryTrendData,
+                        backgroundColor: isDarkMode ? 'rgba(26, 26, 26, 0.95)' : 'rgba(255, 255, 255, 0.95)',
+                        titleColor: textColor,
+                        bodyColor: textColor,
+                        borderColor: isDarkMode ? '#333333' : '#E5E5E5',
+                        borderWidth: 2,
+                        padding: 16,
+                        cornerRadius: 12,
+                        titleFont: {
+                            size: 15,
+                            weight: 'bold'
+                        },
+                        bodyFont: {
+                            size: 14
+                        },
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.parsed || 0;
+                                return `${label}: ${value}%`;
+                            }
+                        }
                     }
+                },
+                animation: {
+                    animateRotate: true,
+                    animateScale: true,
+                    duration: 1200,
+                    easing: 'easeInOutQuart'
                 }
             }
         });
 
         // Age Distribution
-        const ageGroups = { '13-14': 0, '15-16': 0, '17-18': 0, '19': 0 };
+        const ageGroups = { '13-14': 0, '15-16': 0, '17-18': 0, '19+': 0 };
         stats.allUsers.forEach(user => {
             const age = user.age;
             if (age >= 13 && age <= 14) ageGroups['13-14']++;
             else if (age >= 15 && age <= 16) ageGroups['15-16']++;
             else if (age >= 17 && age <= 18) ageGroups['17-18']++;
-            else if (age === 19) ageGroups['19']++;
+            else if (age >= 19) ageGroups['19+']++;
         });
 
+        const hasAgeData = Object.values(ageGroups).some(v => v > 0);
+        const ageData = hasAgeData ? Object.values(ageGroups) : [1, 1, 1, 1];
+        const ageLabels = hasAgeData ? Object.keys(ageGroups) : ['No Data', 'No Data', 'No Data', 'No Data'];
+
         new Chart(document.getElementById('ageDistributionChart'), {
-            type: 'pie',
+            type: 'doughnut',
             data: {
-                labels: Object.keys(ageGroups),
+                labels: ageLabels,
                 datasets: [{
-                    data: Object.values(ageGroups),
-                    backgroundColor: ['#000000', '#404040', '#737373', '#A3A3A3'],
-                    borderWidth: 2,
-                    borderColor: '#FFFFFF'
+                    data: ageData,
+                    backgroundColor: hasAgeData ? [
+                        '#6366F1', // Indigo for 13-14
+                        '#8B5CF6', // Purple for 15-16
+                        '#EC4899', // Pink for 17-18
+                        '#F43F5E'  // Rose for 19+
+                    ] : ['#E5E5E5', '#D4D4D4', '#C3C3C3', '#B2B2B2'],
+                    borderColor: isDarkMode ? '#1A1A1A' : '#FFFFFF',
+                    borderWidth: 4,
+                    hoverOffset: 20,
+                    hoverBorderWidth: 5
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                cutout: '65%',
                 plugins: {
                     legend: {
-                        position: 'bottom'
+                        position: 'bottom',
+                        labels: {
+                            color: textColor,
+                            padding: 20,
+                            font: {
+                                size: 14,
+                                weight: '600',
+                                family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+                            },
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            boxWidth: 10,
+                            boxHeight: 10
+                        }
+                    },
+                    tooltip: {
+                        enabled: hasAgeData,
+                        backgroundColor: isDarkMode ? 'rgba(26, 26, 26, 0.95)' : 'rgba(255, 255, 255, 0.95)',
+                        titleColor: textColor,
+                        bodyColor: textColor,
+                        borderColor: isDarkMode ? '#333333' : '#E5E5E5',
+                        borderWidth: 2,
+                        padding: 16,
+                        cornerRadius: 12,
+                        titleFont: {
+                            size: 15,
+                            weight: 'bold'
+                        },
+                        bodyFont: {
+                            size: 14
+                        },
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.parsed || 0;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                return `${label}: ${value} users (${percentage}%)`;
+                            }
+                        }
                     }
+                },
+                animation: {
+                    animateRotate: true,
+                    animateScale: true,
+                    duration: 1200,
+                    easing: 'easeInOutQuart'
                 }
             }
         });
@@ -829,18 +1151,68 @@ class AdminDashboard {
                 labels: ['Completed Quiz', 'Not Completed'],
                 datasets: [{
                     data: [usersWithQuizzes, usersWithoutQuizzes],
-                    backgroundColor: ['#000000', '#E5E5E5'],
-                    borderWidth: 2,
-                    borderColor: '#FFFFFF'
+                    backgroundColor: [
+                        '#10B981', // Emerald green for Completed
+                        '#F59E0B'  // Amber for Not Completed
+                    ],
+                    borderColor: isDarkMode ? '#1A1A1A' : '#FFFFFF',
+                    borderWidth: 4,
+                    hoverOffset: 20,
+                    hoverBorderWidth: 5
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                cutout: '65%',
                 plugins: {
                     legend: {
-                        position: 'bottom'
+                        position: 'bottom',
+                        labels: {
+                            color: textColor,
+                            padding: 20,
+                            font: {
+                                size: 14,
+                                weight: '600',
+                                family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+                            },
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            boxWidth: 10,
+                            boxHeight: 10
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: isDarkMode ? 'rgba(26, 26, 26, 0.95)' : 'rgba(255, 255, 255, 0.95)',
+                        titleColor: textColor,
+                        bodyColor: textColor,
+                        borderColor: isDarkMode ? '#333333' : '#E5E5E5',
+                        borderWidth: 2,
+                        padding: 16,
+                        cornerRadius: 12,
+                        titleFont: {
+                            size: 15,
+                            weight: 'bold'
+                        },
+                        bodyFont: {
+                            size: 14
+                        },
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.parsed || 0;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                return `${label}: ${value} users (${percentage}%)`;
+                            }
+                        }
                     }
+                },
+                animation: {
+                    animateRotate: true,
+                    animateScale: true,
+                    duration: 1200,
+                    easing: 'easeInOutQuart'
                 }
             }
         });
@@ -1158,6 +1530,28 @@ class AdminDashboard {
         }
         
         return recommendations;
+    }
+
+    clearSupabaseStorage() {
+        // Clear localStorage
+        const localStorageKeys = [];
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && (key.includes('supabase') || key.includes('sb-'))) {
+                localStorageKeys.push(key);
+            }
+        }
+        localStorageKeys.forEach(key => localStorage.removeItem(key));
+        
+        // Clear sessionStorage
+        const sessionStorageKeys = [];
+        for (let i = 0; i < sessionStorage.length; i++) {
+            const key = sessionStorage.key(i);
+            if (key && (key.includes('supabase') || key.includes('sb-'))) {
+                sessionStorageKeys.push(key);
+            }
+        }
+        sessionStorageKeys.forEach(key => sessionStorage.removeItem(key));
     }
 
     showModal(content) {

@@ -383,10 +383,15 @@ class QuizManager {
                 console.error('Error saving quiz results:', error);
                 throw error;
             }
+
+            // Show success toast
+            if (window.showSuccess) {
+                window.showSuccess('Quiz results saved successfully!');
+            }
         } catch (error) {
             console.error('Failed to save quiz results:', error);
-            if (window.animationManager) {
-                window.animationManager.showError('Failed to save results. Please try again.');
+            if (window.showError) {
+                window.showError('Failed to save results. Please try again.');
             }
         }
     }
@@ -492,6 +497,7 @@ class QuizManager {
                 <!-- Action Buttons -->
                 <div class="results-actions">
                     <button class="btn-primary btn-large" onclick="window.location.href='#solutions'">View Solutions</button>
+                    <button class="btn-secondary btn-large" onclick="window.location.href='#history'">View History</button>
                     <button class="btn-secondary btn-large" onclick="window.quizManager.retakeQuiz()">Retake Quiz</button>
                 </div>
             </div>

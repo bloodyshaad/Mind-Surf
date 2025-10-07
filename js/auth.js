@@ -3,21 +3,37 @@ class AuthManager {
     constructor() {
         this.currentUser = null;
         this.isAdmin = false;
-        this.init();
+        this.initialized = false;
     }
 
     async init() {
-        // Check for existing session
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session) {
-            this.currentUser = session.user;
-            await this.checkAdminStatus();
-            this.updateUI();
-        }
+        if (this.initialized) return;
+        this.initialized = true;
+
+        // Setup event listeners first (synchronous)
+        this.setupEventListeners();
+
+        // Defer auth check to not block page load
+        requestIdleCallback(() => {
+            this.checkSession();
+        }, { timeout: 100 });
 
         // Listen for auth changes
-        supabase.auth.onAuthStateChange((event, session) => {
+        supabase.auth.onAuthStateChange(async (event, session) => {
             if (event === 'SIGNED_IN') {
+                // Verify user exists before allowing sign in
+                if (session && session.user) {
+                    const userExists = await this.verifyUserExists(session.user.id);
+                    if (!userExists) {
+                        // User was deleted, sign out immediately
+                        await supabase.auth.signOut({ scope: 'local' });
+                        this.clearSupabaseStorage();
+                        this.currentUser = null;
+                        this.isAdmin = false;
+                        this.updateUI();
+                        return;
+                    }
+                }
                 this.currentUser = session.user;
                 this.checkAdminStatus();
                 this.updateUI();
@@ -25,10 +41,93 @@ class AuthManager {
                 this.currentUser = null;
                 this.isAdmin = false;
                 this.updateUI();
+            } else if (event === 'TOKEN_REFRESHED') {
+                // Verify user still exists on token refresh
+                if (session && session.user) {
+                    const userExists = await this.verifyUserExists(session.user.id);
+                    if (!userExists) {
+                        await supabase.auth.signOut({ scope: 'local' });
+                        this.clearSupabaseStorage();
+                        this.currentUser = null;
+                        this.isAdmin = false;
+                        this.updateUI();
+                    }
+                }
             }
         });
+        
+        // Periodic session validation (every 5 minutes)
+        this.startSessionValidation();
+    }
+    
+    startSessionValidation() {
+        // Check session validity every 5 minutes
+        setInterval(async () => {
+            if (this.currentUser) {
+                const userExists = await this.verifyUserExists(this.currentUser.id);
+                if (!userExists) {
+                    // User was deleted, force logout
+                    await this.handleLogout();
+                }
+            }
+        }, 5 * 60 * 1000); // 5 minutes
+    }
 
-        this.setupEventListeners();
+    async checkSession() {
+        try {
+            const { data: { session }, error } = await supabase.auth.getSession();
+            
+            if (error) {
+                // Session error - clear everything
+                this.clearSupabaseStorage();
+                this.currentUser = null;
+                this.isAdmin = false;
+                this.updateUI();
+                return;
+            }
+            
+            if (session) {
+                // Verify the user still exists in the database
+                const userExists = await this.verifyUserExists(session.user.id);
+                
+                if (!userExists) {
+                    // User was deleted - clear session and storage
+                    await supabase.auth.signOut({ scope: 'local' });
+                    this.clearSupabaseStorage();
+                    this.currentUser = null;
+                    this.isAdmin = false;
+                    this.updateUI();
+                    return;
+                }
+                
+                this.currentUser = session.user;
+                await this.checkAdminStatus();
+                this.updateUI();
+            }
+        } catch (error) {
+            console.error('Session check error:', error);
+            // On error, clear everything to be safe
+            this.clearSupabaseStorage();
+            this.currentUser = null;
+            this.isAdmin = false;
+            this.updateUI();
+        }
+    }
+    
+    async verifyUserExists(userId) {
+        try {
+            const { data, error } = await supabase
+                .from('users')
+                .select('id')
+                .eq('id', userId)
+                .maybeSingle();
+            
+            // If error or no data, user doesn't exist
+            return !error && data !== null;
+        } catch (error) {
+            console.error('Error verifying user:', error);
+            return false;
+        }
     }
 
     setupEventListeners() {
@@ -126,6 +225,11 @@ class AuthManager {
             if (this.isAdmin) {
                 this.showAdminLink();
             }
+
+            // Show history link for authenticated users
+            if (window.app) {
+                window.app.updateHistoryLinkVisibility(true);
+            }
         } else {
             // User is logged out
             if (authBtn) {
@@ -138,6 +242,11 @@ class AuthManager {
                 authBtnMobile.textContent = 'Login';
                 authBtnMobile.href = 'login.html';
                 authBtnMobile.onclick = null;
+            }
+
+            // Hide history link for non-authenticated users
+            if (window.app) {
+                window.app.updateHistoryLinkVisibility(false);
             }
         }
     }
@@ -267,20 +376,44 @@ class AuthManager {
     }
 
     async handleLogout() {
+        // Clear local state immediately
+        this.currentUser = null;
+        this.isAdmin = false;
+        
         try {
-            const { error } = await supabase.auth.signOut();
-            if (error) {
-                console.error('Error signing out:', error);
-                throw error;
-            }
-            
-            window.location.href = 'index.html';
+            // Attempt to sign out from Supabase
+            await supabase.auth.signOut({ scope: 'local' });
         } catch (error) {
-            console.error('Logout error:', error);
-            if (window.animationManager) {
-                window.animationManager.showError('Error logging out. Please try again.');
+            // Silently handle sign out errors - we'll clear storage anyway
+        }
+        
+        // Clear all Supabase-related storage
+        this.clearSupabaseStorage();
+        
+        // Redirect to home page (using replace to prevent back button issues)
+        window.location.replace('index.html');
+    }
+    
+    clearSupabaseStorage() {
+        // Clear localStorage
+        const localStorageKeys = [];
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && (key.includes('supabase') || key.includes('sb-'))) {
+                localStorageKeys.push(key);
             }
         }
+        localStorageKeys.forEach(key => localStorage.removeItem(key));
+        
+        // Clear sessionStorage
+        const sessionStorageKeys = [];
+        for (let i = 0; i < sessionStorage.length; i++) {
+            const key = sessionStorage.key(i);
+            if (key && (key.includes('supabase') || key.includes('sb-'))) {
+                sessionStorageKeys.push(key);
+            }
+        }
+        sessionStorageKeys.forEach(key => sessionStorage.removeItem(key));
     }
 
     isAuthenticated() {
@@ -296,6 +429,15 @@ class AuthManager {
     }
 }
 
-// Initialize auth manager
+// Initialize auth manager lazily
 const authManager = new AuthManager();
 window.authManager = authManager;
+
+// Defer initialization to not block page load
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        requestAnimationFrame(() => authManager.init());
+    });
+} else {
+    requestAnimationFrame(() => authManager.init());
+}

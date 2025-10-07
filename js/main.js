@@ -60,6 +60,18 @@ class App {
             });
         }
 
+        // Get started button
+        const getStartedBtn = document.getElementById('getStartedBtn');
+        if (getStartedBtn) {
+            getStartedBtn.addEventListener('click', () => {
+                if (window.authManager && window.authManager.isAuthenticated()) {
+                    document.getElementById('quiz').scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    window.location.href = 'login.html';
+                }
+            });
+        }
+
         // Learn more button
         const learnMoreBtn = document.getElementById('learnMoreBtn');
         if (learnMoreBtn) {
@@ -67,6 +79,14 @@ class App {
                 document.getElementById('understanding').scrollIntoView({ behavior: 'smooth' });
             });
         }
+
+        // Handle hash navigation for history section
+        window.addEventListener('hashchange', () => {
+            this.handleHashNavigation();
+        });
+
+        // Initial hash check
+        this.handleHashNavigation();
 
         // Keyboard navigation
         document.addEventListener('keydown', (e) => {
@@ -172,6 +192,36 @@ class App {
     handleSuccess(message) {
         if (window.animationManager) {
             window.animationManager.showSuccess(message);
+        }
+    }
+
+    handleHashNavigation() {
+        const hash = window.location.hash;
+        
+        // Show/hide history section based on hash
+        const historySection = document.getElementById('history');
+        if (historySection) {
+            if (hash === '#history') {
+                historySection.style.display = 'block';
+                // Load history if authenticated
+                if (window.authManager && window.authManager.isAuthenticated() && window.historyManager) {
+                    window.historyManager.loadHistory();
+                }
+            } else {
+                historySection.style.display = 'none';
+            }
+        }
+    }
+
+    updateHistoryLinkVisibility(isAuthenticated) {
+        const historyNavLink = document.getElementById('historyNavLink');
+        const historyNavLinkMobile = document.getElementById('historyNavLinkMobile');
+        
+        if (historyNavLink) {
+            historyNavLink.style.display = isAuthenticated ? 'inline-block' : 'none';
+        }
+        if (historyNavLinkMobile) {
+            historyNavLinkMobile.style.display = isAuthenticated ? 'block' : 'none';
         }
     }
 }

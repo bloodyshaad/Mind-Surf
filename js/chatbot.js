@@ -268,10 +268,10 @@ Use this information to provide personalized, relevant support. Reference their 
                 position: fixed;
                 bottom: 100px;
                 right: 24px;
-                width: 420px;
-                height: 650px;
+                width: 380px;
+                height: 550px;
                 background: var(--bg-primary);
-                border-radius: 20px;
+                border-radius: 16px;
                 box-shadow: var(--shadow-2xl);
                 display: none;
                 flex-direction: column;
@@ -952,7 +952,10 @@ Use this information to provide personalized, relevant support. Reference their 
             ]
         };
 
-        const response = await fetch(`${this.apiUrl}?key=${this.apiKey}`, {
+        // FIXED: Proper API endpoint construction
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${this.apiKey}`;
+
+        const response = await fetch(apiUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -961,10 +964,16 @@ Use this information to provide personalized, relevant support. Reference their 
         });
 
         if (!response.ok) {
-            throw new Error(`API request failed: ${response.status}`);
+            const errorText = await response.text();
+            throw new Error(`API request failed: ${response.status} - ${errorText}`);
         }
 
         const data = await response.json();
+        
+        if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
+            throw new Error('Invalid API response format');
+        }
+
         const aiResponse = data.candidates[0].content.parts[0].text;
 
         // Save to conversation history

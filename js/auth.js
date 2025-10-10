@@ -31,16 +31,19 @@ class AuthManager {
                         this.currentUser = null;
                         this.isAdmin = false;
                         this.updateUI();
+                        this.dispatchAuthStateChange(false);
                         return;
                     }
                 }
                 this.currentUser = session.user;
                 this.checkAdminStatus();
                 this.updateUI();
+                this.dispatchAuthStateChange(true);
             } else if (event === 'SIGNED_OUT') {
                 this.currentUser = null;
                 this.isAdmin = false;
                 this.updateUI();
+                this.dispatchAuthStateChange(false);
             } else if (event === 'TOKEN_REFRESHED') {
                 // Verify user still exists on token refresh
                 if (session && session.user) {
@@ -51,6 +54,7 @@ class AuthManager {
                         this.currentUser = null;
                         this.isAdmin = false;
                         this.updateUI();
+                        this.dispatchAuthStateChange(false);
                     }
                 }
             }
@@ -144,7 +148,7 @@ class AuthManager {
         try {
             const { data, error } = await supabase
                 .from('users')
-                .select('is_admin')
+                .select('is_admin, age')
                 .eq('id', this.currentUser.id)
                 .maybeSingle();
 
@@ -162,6 +166,11 @@ class AuthManager {
                 return;
             }
             
+            // Check if user has age, if not prompt for it
+            if (!data.age) {
+                await this.promptAndUpdateAge();
+            }
+            
             this.isAdmin = data.is_admin || false;
         } catch (error) {
             console.error('Error checking admin status:', error);
@@ -169,17 +178,84 @@ class AuthManager {
         }
     }
 
+    async promptAndUpdateAge() {
+        const age = await this.promptForAge();
+        if (!age) {
+            // User cancelled, sign them out
+            await this.handleLogout();
+            return;
+        }
+        
+        // Update user metadata and database
+        try {
+            // Update auth metadata
+            await supabase.auth.updateUser({
+                data: { age: age }
+            });
+            
+            // Update database
+            await supabase
+                .from('users')
+                .update({ age: age })
+                .eq('id', this.currentUser.id);
+                
+        } catch (error) {
+            console.error('Error updating age:', error);
+        }
+    }
+
     async createUserProfile() {
         if (!this.currentUser) return;
 
+        let ageToUse = this.currentUser.user_metadata?.age;
+        
+        // Check if age is missing (OAuth users)
+        if (!ageToUse) {
+            // Prompt for age before creating profile
+            const age = await this.promptForAge();
+            if (!age) {
+                // User cancelled, sign them out
+                await this.handleLogout();
+                return;
+            }
+            
+            ageToUse = age;
+            
+            // Update user metadata with age
+            try {
+                const { error: updateError } = await supabase.auth.updateUser({
+                    data: { age: age }
+                });
+                
+                if (updateError) {
+                    console.error('Error updating user metadata:', updateError);
+                    // Continue anyway with the age we collected
+                }
+                
+                // Refresh current user to get updated metadata
+                const { data: { user } } = await supabase.auth.getUser();
+                if (user) {
+                    this.currentUser = user;
+                }
+            } catch (error) {
+                console.error('Error updating user metadata:', error);
+                // Continue anyway with the age we collected
+            }
+        }
+
         try {
+            const fullName = this.currentUser.user_metadata?.full_name || 
+                             this.currentUser.user_metadata?.name || 
+                             this.currentUser.email?.split('@')[0] || 
+                             'User';
+            
             const { error } = await supabase
                 .from('users')
                 .insert({
                     id: this.currentUser.id,
                     email: this.currentUser.email,
-                    full_name: this.currentUser.user_metadata?.full_name || 'User',
-                    age: this.currentUser.user_metadata?.age || 18,
+                    full_name: fullName,
+                    age: ageToUse,
                     is_admin: false
                 });
             
@@ -189,6 +265,148 @@ class AuthManager {
         } catch (error) {
             console.error('Error creating user profile:', error);
         }
+    }
+
+    promptForAge() {
+        return new Promise((resolve) => {
+            // Create modal
+            const modal = document.createElement('div');
+            modal.className = 'age-prompt-modal';
+            modal.innerHTML = `
+                <div class="age-prompt-overlay"></div>
+                <div class="age-prompt-content">
+                    <h2>Welcome to MindSurf!</h2>
+                    <p>To provide you with age-appropriate content, please tell us your age.</p>
+                    <form id="agePromptForm">
+                        <div class="form-group">
+                            <label for="ageInput">Your Age</label>
+                            <input type="number" id="ageInput" min="13" max="19" required placeholder="Enter your age (13-19)" autofocus>
+                            <small>You must be between 13-19 years old to use MindSurf</small>
+                        </div>
+                        <div class="age-prompt-error" id="agePromptError"></div>
+                        <div class="age-prompt-buttons">
+                            <button type="submit" class="btn-primary">Continue</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+
+            // Add styles
+            const style = document.createElement('style');
+            style.textContent = `
+                .age-prompt-modal {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    z-index: 10000;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+                .age-prompt-overlay {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(0, 0, 0, 0.7);
+                    backdrop-filter: blur(4px);
+                }
+                .age-prompt-content {
+                    position: relative;
+                    background: var(--color-white);
+                    border-radius: 16px;
+                    padding: 2rem;
+                    max-width: 400px;
+                    width: 90%;
+                    box-shadow: var(--shadow-2xl);
+                    animation: slideInUp 0.3s ease;
+                }
+                [data-theme="dark"] .age-prompt-content {
+                    background: var(--bg-primary);
+                    border: 1px solid var(--border-color);
+                }
+                .age-prompt-content h2 {
+                    margin-bottom: 0.5rem;
+                    font-size: 1.5rem;
+                    color: var(--text-primary);
+                }
+                .age-prompt-content p {
+                    margin-bottom: 1.5rem;
+                    color: var(--text-secondary);
+                }
+                .age-prompt-content .form-group {
+                    margin-bottom: 1rem;
+                }
+                .age-prompt-content label {
+                    display: block;
+                    margin-bottom: 0.5rem;
+                    font-weight: 600;
+                    color: var(--text-primary);
+                }
+                .age-prompt-content input {
+                    width: 100%;
+                    padding: 0.75rem;
+                    border: 2px solid var(--color-gray-300);
+                    border-radius: 8px;
+                    font-size: 1rem;
+                    background: var(--bg-primary);
+                    color: var(--text-primary);
+                }
+                .age-prompt-content input:focus {
+                    outline: none;
+                    border-color: var(--color-black);
+                }
+                .age-prompt-content small {
+                    display: block;
+                    margin-top: 0.5rem;
+                    color: var(--text-tertiary);
+                    font-size: 0.85rem;
+                }
+                .age-prompt-error {
+                    color: #EF4444;
+                    font-size: 0.9rem;
+                    margin-bottom: 1rem;
+                    display: none;
+                }
+                .age-prompt-buttons {
+                    display: flex;
+                    gap: 1rem;
+                }
+                .age-prompt-buttons button {
+                    flex: 1;
+                }
+            `;
+            document.head.appendChild(style);
+
+            document.body.appendChild(modal);
+
+            // Handle form submission
+            const form = modal.querySelector('#agePromptForm');
+            const ageInput = modal.querySelector('#ageInput');
+            const errorDiv = modal.querySelector('#agePromptError');
+
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const age = parseInt(ageInput.value);
+
+                if (age < 13 || age > 19) {
+                    errorDiv.textContent = 'Age must be between 13 and 19';
+                    errorDiv.style.display = 'block';
+                    return;
+                }
+
+                modal.remove();
+                resolve(age);
+            });
+
+            // Prevent closing by clicking overlay
+            modal.querySelector('.age-prompt-overlay').addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+        });
     }
 
     updateUI() {
@@ -227,9 +445,7 @@ class AuthManager {
             }
 
             // Show history link for authenticated users
-            if (window.app) {
-                window.app.updateHistoryLinkVisibility(true);
-            }
+            this.updateHistoryLinkVisibility(true);
         } else {
             // User is logged out
             if (authBtn) {
@@ -245,9 +461,19 @@ class AuthManager {
             }
 
             // Hide history link for non-authenticated users
-            if (window.app) {
-                window.app.updateHistoryLinkVisibility(false);
-            }
+            this.updateHistoryLinkVisibility(false);
+        }
+    }
+
+    updateHistoryLinkVisibility(isAuthenticated) {
+        const historyNavLink = document.getElementById('historyNavLink');
+        const historyNavLinkMobile = document.getElementById('historyNavLinkMobile');
+        
+        if (historyNavLink) {
+            historyNavLink.style.display = isAuthenticated ? 'inline-block' : 'none';
+        }
+        if (historyNavLinkMobile) {
+            historyNavLinkMobile.style.display = isAuthenticated ? 'block' : 'none';
         }
     }
 
@@ -426,6 +652,14 @@ class AuthManager {
 
     isUserAdmin() {
         return this.isAdmin;
+    }
+
+    dispatchAuthStateChange(authenticated) {
+        // Dispatch custom event for other modules to listen to
+        const event = new CustomEvent('authStateChanged', {
+            detail: { authenticated, user: this.currentUser }
+        });
+        window.dispatchEvent(event);
     }
 }
 

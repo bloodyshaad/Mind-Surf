@@ -1,0 +1,587 @@
+/* Advanced Features Styles - Black & White Only */
+
+/* Pull to Refresh */
+.pull-to-refresh-indicator {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+    background: var(--color-black);
+    color: var(--color-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    transform: translateY(-100%);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    z-index: 9999;
+    opacity: 0;
+}
+
+.pull-to-refresh-indicator.refreshing .refresh-spinner {
+    animation: rotate 1s linear infinite;
+}
+
+.refresh-spinner {
+    width: 24px;
+    height: 24px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+}
+
+/* Floating Action Buttons */
+.floating-action-btn {
+    position: fixed;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--color-black);
+    color: var(--color-white);
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    transition: var(--transition-smooth);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.floating-action-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 30px rgba(0, 0, 0, 0.6);
+}
+
+.floating-action-btn:active {
+    transform: scale(0.95);
+}
+
+.voice-command-btn {
+    bottom: 2rem;
+    right: 2rem;
+}
+
+.voice-command-btn.listening {
+    animation: pulse 1s ease-in-out infinite;
+    background: var(--color-gray-800);
+}
+
+/* Removed: share-btn, fullscreen-btn, speak-btn - Not needed */
+
+/* Shortcuts Modal */
+.shortcuts-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    animation: fadeIn 0.3s ease;
+}
+
+.shortcuts-content {
+    background: var(--bg-primary);
+    padding: 2rem;
+    border-radius: 20px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.shortcuts-content h3 {
+    font-size: 1.75rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-primary);
+}
+
+.shortcuts-content ul {
+    list-style: none;
+    margin-bottom: 2rem;
+}
+
+.shortcuts-content li {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.shortcuts-content kbd {
+    background: var(--color-black);
+    color: var(--color-white);
+    padding: 0.25rem 0.75rem;
+    border-radius: 6px;
+    font-family: monospace;
+    font-weight: 600;
+    min-width: 60px;
+    text-align: center;
+}
+
+.shortcuts-content button {
+    width: 100%;
+    padding: 0.75rem;
+    background: var(--color-black);
+    color: var(--color-white);
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.shortcuts-content button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+/* Custom Context Menu */
+.custom-context-menu {
+    position: absolute;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: var(--shadow-xl);
+    padding: 0.5rem;
+    z-index: 10000;
+    display: none;
+    min-width: 150px;
+}
+
+.context-menu-item {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: var(--transition-smooth);
+    color: var(--text-primary);
+}
+
+.context-menu-item:hover {
+    background: var(--color-gray-100);
+}
+
+/* Smooth Hover Effects - No Tilt for Better Readability */
+.effect-card,
+.solution-card,
+.quiz-container {
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+/* Expanded Card State */
+.effect-card.expanded,
+.solution-card.expanded {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1.2);
+    z-index: 9999;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.effect-card.expanded::before,
+.solution-card.expanded::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: -1;
+}
+
+/* Long Press Effect */
+.long-pressed {
+    animation: longPressEffect 0.3s ease;
+}
+
+@keyframes longPressEffect {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(0.95); }
+}
+
+/* Swipe Indicators */
+.swipe-indicator {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 3rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 9999;
+}
+
+.swipe-indicator.left {
+    left: 2rem;
+}
+
+.swipe-indicator.right {
+    right: 2rem;
+}
+
+.swipe-indicator.active {
+    opacity: 1;
+    animation: swipeHint 0.5s ease;
+}
+
+@keyframes swipeHint {
+    0%, 100% { transform: translateY(-50%) translateX(0); }
+    50% { transform: translateY(-50%) translateX(20px); }
+}
+
+/* Orientation Specific Styles */
+.landscape .hero {
+    min-height: 100vh;
+}
+
+.portrait .hero {
+    min-height: auto;
+}
+
+/* Low Power Mode */
+.low-power-mode * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.1s !important;
+}
+
+.low-power-mode .floating-shape {
+    animation: none !important;
+}
+
+/* Slow Connection Mode */
+.slow-connection img {
+    filter: blur(5px);
+    transition: filter 0.3s ease;
+}
+
+.slow-connection img.loaded {
+    filter: blur(0);
+}
+
+/* Progressive Image Loading */
+img[data-src] {
+    filter: blur(10px);
+    transition: filter 0.5s ease;
+}
+
+img[data-src].loaded {
+    filter: blur(0);
+}
+
+/* Lazy Load Elements */
+[data-lazy] {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+[data-lazy].loaded {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Parallax Elements */
+.parallax-layer {
+    transition: transform 0.1s ease-out;
+}
+
+/* Touch Feedback */
+.touch-feedback {
+    position: relative;
+    overflow: hidden;
+}
+
+.touch-feedback::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.1);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+[data-theme="dark"] .touch-feedback::after {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.touch-feedback:active::after {
+    width: 300px;
+    height: 300px;
+}
+
+/* Pinch Zoom Indicator */
+.pinch-zoom-indicator {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 9999;
+}
+
+.pinch-zoom-indicator.active {
+    opacity: 1;
+}
+
+/* Shake Animation */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+    20%, 40%, 60%, 80% { transform: translateX(10px); }
+}
+
+.shake {
+    animation: shake 0.5s ease;
+}
+
+/* Network Status Indicator */
+.network-status {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    padding: 0.5rem 1rem;
+    background: var(--color-gray-700);
+    color: var(--color-white);
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    z-index: 9999;
+    display: none;
+}
+
+.network-status.slow {
+    display: block;
+    background: var(--color-gray-600);
+}
+
+.network-status.offline {
+    display: block;
+    background: var(--color-black);
+}
+
+/* Battery Status Indicator */
+.battery-status {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    padding: 0.5rem 1rem;
+    background: var(--color-gray-700);
+    color: var(--color-white);
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    z-index: 9999;
+    display: none;
+}
+
+.battery-status.low {
+    display: block;
+    background: var(--color-black);
+}
+
+/* Fullscreen Mode */
+:fullscreen {
+    background: var(--bg-primary);
+}
+
+:fullscreen .navbar {
+    display: none;
+}
+
+/* Voice Command Visualization */
+.voice-wave {
+    position: fixed;
+    bottom: 8rem;
+    right: 2rem;
+    display: none;
+    gap: 4px;
+    z-index: 1001;
+}
+
+.voice-command-btn.listening + .voice-wave {
+    display: flex;
+}
+
+.voice-wave span {
+    width: 4px;
+    height: 20px;
+    background: var(--color-black);
+    border-radius: 2px;
+    animation: voiceWave 1s ease-in-out infinite;
+}
+
+.voice-wave span:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.voice-wave span:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+.voice-wave span:nth-child(4) {
+    animation-delay: 0.3s;
+}
+
+@keyframes voiceWave {
+    0%, 100% { height: 20px; }
+    50% { height: 40px; }
+}
+
+/* Accessibility: High Contrast Mode */
+@media (prefers-contrast: high) {
+    .floating-action-btn {
+        border: 2px solid var(--color-white);
+    }
+}
+
+/* Accessibility: Reduced Transparency */
+@media (prefers-reduced-transparency: reduce) {
+    .shortcuts-modal {
+        backdrop-filter: none;
+        background: rgba(0, 0, 0, 0.95);
+    }
+    
+    .navbar {
+        backdrop-filter: none;
+        background: var(--bg-primary);
+    }
+}
+
+/* Print Styles */
+@media print {
+    .floating-action-btn,
+    .shortcuts-modal,
+    .custom-context-menu,
+    .pull-to-refresh-indicator,
+    .network-status,
+    .battery-status {
+        display: none !important;
+    }
+}
+
+/* Mobile Specific Enhancements */
+@media (max-width: 768px) {
+    /* Larger touch targets */
+    button,
+    a,
+    .quiz-option {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    /* Prevent text selection on touch */
+    .quiz-option,
+    .effect-card,
+    .solution-card {
+        -webkit-user-select: none;
+        user-select: none;
+    }
+    
+    /* Smooth scrolling on mobile */
+    body {
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* Tablet Specific */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .floating-action-btn {
+        width: 48px;
+        height: 48px;
+        font-size: 1.25rem;
+    }
+}
+
+/* Desktop Specific */
+@media (min-width: 1024px) {
+    /* Smooth parallax */
+    .floating-shape {
+        will-change: transform;
+    }
+}
+
+/* Landscape Mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+    .floating-action-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
+    }
+    
+    .voice-command-btn {
+        bottom: 1rem;
+        right: 1rem;
+    }
+}
+
+/* Dark Mode Adjustments */
+[data-theme="dark"] .shortcuts-content {
+    background: var(--bg-secondary);
+}
+
+[data-theme="dark"] .custom-context-menu {
+    background: var(--bg-secondary);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .context-menu-item:hover {
+    background: var(--color-gray-700);
+}
+
+[data-theme="dark"] .floating-action-btn {
+    background: var(--color-white);
+    color: var(--color-black);
+}
+
+[data-theme="dark"] .voice-wave span {
+    background: var(--color-white);
+}
+
+/* Animation Performance */
+@media (prefers-reduced-motion: no-preference) {
+    .floating-action-btn {
+        animation: floatBtn 3s ease-in-out infinite;
+    }
+}
+
+@keyframes floatBtn {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Hover Effects for Desktop - Subtle and Professional */
+@media (hover: hover) and (pointer: fine) {
+    .effect-card:hover,
+    .solution-card:hover {
+        box-shadow: var(--shadow-2xl);
+    }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+    .floating-action-btn:active {
+        transform: scale(0.9);
+    }
+    
+    .touch-feedback {
+        -webkit-tap-highlight-color: transparent;
+    }
+}

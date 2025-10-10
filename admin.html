@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/admin.css">
     <link rel="stylesheet" href="styles/animations.css">
+    <link rel="stylesheet" href="styles/features.css">
 </head>
 <body>
     <div id="adminApp">
@@ -36,8 +37,16 @@
 
         <!-- Admin Content -->
         <div class="admin-container">
+            <!-- Mobile Sidebar Overlay -->
+            <div class="admin-sidebar-overlay" id="adminSidebarOverlay"></div>
+            
+            <!-- Mobile Toggle Button -->
+            <button class="admin-mobile-toggle" id="adminMobileToggle" aria-label="Toggle sidebar menu">
+                ☰
+            </button>
+            
             <!-- Sidebar -->
-            <aside class="admin-sidebar">
+            <aside class="admin-sidebar" id="adminSidebar">
                 <div class="sidebar-menu">
                     <button class="sidebar-item active" data-view="overview">
                         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -72,6 +81,13 @@
                         </svg>
                         <span>Analytics</span>
                     </button>
+                    <button class="sidebar-item" data-view="age-analysis">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                            <path d="M12 6V12L16 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        <span>Age Analysis</span>
+                    </button>
                 </div>
             </aside>
 
@@ -87,6 +103,11 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="js/config.js"></script>
+    <script src="js/error-handler.js"></script>
+    <script src="js/notification-system.js"></script>
+    <script src="js/chatbot.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/features.js"></script>
     <script src="js/admin.js"></script>
 </body>
 </html>

@@ -120,9 +120,25 @@ class AnimationManager {
                 if (href === '#' || !href) return;
 
                 e.preventDefault();
+                
+                // Update URL hash
+                window.location.hash = href;
+                
                 const target = document.querySelector(href);
                 
                 if (target) {
+                    // Show the target section if it's hidden
+                    if (target.style.display === 'none') {
+                        target.style.display = 'block';
+                    }
+                    
+                    // Load history if navigating to history section
+                    if (href === '#history' && window.historyManager && window.authManager) {
+                        if (window.authManager.isAuthenticated()) {
+                            window.historyManager.loadHistory();
+                        }
+                    }
+                    
                     requestAnimationFrame(() => {
                         const offsetTop = target.offsetTop - 80;
                         window.scrollTo({
@@ -132,15 +148,19 @@ class AnimationManager {
                     });
 
                     // Update active nav link
-                    document.querySelectorAll('.nav-link').forEach(link => {
+                    document.querySelectorAll('.nav-link, .mobile-link').forEach(link => {
                         link.classList.remove('active');
                     });
                     anchor.classList.add('active');
 
                     // Close mobile menu if open
                     const mobileMenu = document.getElementById('mobileMenu');
+                    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
                     if (mobileMenu && mobileMenu.classList.contains('active')) {
                         mobileMenu.classList.remove('active');
+                        if (mobileMenuBtn) {
+                            mobileMenuBtn.classList.remove('active');
+                        }
                     }
                 }
             });
@@ -275,9 +295,27 @@ class AnimationManager {
         const mobileMenu = document.getElementById('mobileMenu');
 
         if (mobileMenuBtn && mobileMenu) {
-            mobileMenuBtn.addEventListener('click', () => {
+            mobileMenuBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
                 mobileMenu.classList.toggle('active');
                 mobileMenuBtn.classList.toggle('active');
+            });
+
+            // Close menu when clicking on a link
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.remove('active');
+                    mobileMenuBtn.classList.remove('active');
+                });
+            });
+
+            // Close menu when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                    mobileMenu.classList.remove('active');
+                    mobileMenuBtn.classList.remove('active');
+                }
             });
         }
     }

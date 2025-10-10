@@ -1,12 +1,10 @@
 // Supabase Configuration
 const SUPABASE_CONFIG = {
     url: 'https://ecurgvxuwpphdkycbcly.supabase.co',
-    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVjdXJndnh1d3BwaGRreWNiY2x5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk3NDYxNzEsImV4cCI6MjA3NTMyMjE3MX0.5YFOUic9GlNNVlWZobD-1z0Bwju0LgdpZDIly1yEbQ0',
-    serviceRoleKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVjdXJndnh1d3BwaGRreWNiY2x5Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1OTc0NjE3MSwiZXhwIjoyMDc1MzIyMTcxfQ.8hhy4sdEsLAFRpzJD7Kuqo5b9NN2AWGarV497XzPGs0'
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVjdXJndnh1d3BwaGRreWNiY2x5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk3NDYxNzEsImV4cCI6MjA3NTMyMjE3MX0.5YFOUic9GlNNVlWZobD-1z0Bwju0LgdpZDIly1yEbQ0'
 };
 
-// Initialize Supabase Client (using anon key for client-side operations)
-// Note: Service role key is available in SUPABASE_CONFIG but should only be used server-side
+// Initialize Supabase Client
 const supabase = window.supabase.createClient(
     SUPABASE_CONFIG.url,
     SUPABASE_CONFIG.anonKey

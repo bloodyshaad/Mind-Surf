@@ -6,6 +6,8 @@
     <title>Login - MindSurf</title>
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/auth.css">
+    <link rel="stylesheet" href="styles/animations.css">
+    <link rel="stylesheet" href="styles/features.css">
 </head>
 <body>
     <div class="auth-page">
@@ -96,6 +98,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/config.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/features.js"></script>
     <script>
         const loginForm = document.getElementById('loginForm');
         const errorMessage = document.getElementById('errorMessage');
@@ -149,10 +153,15 @@
         const googleLoginBtn = document.getElementById('googleLoginBtn');
         googleLoginBtn.addEventListener('click', async () => {
             try {
+                // Use production URL for redirect, or current origin if running locally
+                const redirectUrl = window.location.hostname === 'localhost' 
+                    ? window.location.origin + '/index.html'
+                    : 'https://mind-surf.netlify.app/index.html';
+                
                 const { data, error } = await supabase.auth.signInWithOAuth({
                     provider: 'google',
                     options: {
-                        redirectTo: window.location.origin + '/index.html',
+                        redirectTo: redirectUrl,
                         queryParams: {
                             access_type: 'offline',
                             prompt: 'consent',

@@ -1,7 +1,7 @@
 // AI Chatbot System using Gemini API
 class ChatbotSystem {
     constructor() {
-        this.apiKey = 'AIzaSyB2brjGwxLtSz_EqG9eBKBRaxqblRyNwyo';
+        this.apiKey = 'AIzaSyA2frWF7MFlKcGIlMnTNgspVJ74lvjiK7g';
         this.apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent';
         this.conversationHistory = [];
         this.isOpen = false;

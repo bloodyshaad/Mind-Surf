@@ -2,7 +2,7 @@
 class ChatbotSystem {
     constructor() {
         this.apiKey = 'AIzaSyB2brjGwxLtSz_EqG9eBKBRaxqblRyNwyo';
-        this.apiUrl = 'https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent';
+        this.apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
         this.conversationHistory = [];
         this.isOpen = false;
         this.isTyping = false;
@@ -58,16 +58,22 @@ Remember: You're a supportive friend, not a therapist. Always encourage professi
                 .eq('user_id', userId)
                 .order('created_at', { ascending: false })
                 .limit(1)
-                .single();
+                .maybeSingle();
 
-            if (error && error.code !== 'PGRST116') throw error;
+            if (error && error.code !== 'PGRST116') {
+                console.warn('Quiz data load error:', error);
+                return;
+            }
 
             if (data) {
                 this.userQuizData = data;
-                window.logInfo('CHATBOT', 'Loaded user quiz data for personalized support');
+                if (window.logInfo) {
+                    window.logInfo('CHATBOT', 'Loaded user quiz data for personalized support');
+                }
             }
         } catch (error) {
-            window.logError('CHATBOT', `Failed to load quiz data: ${error.message}`);
+            console.warn('Failed to load quiz data:', error.message);
+            // Don't throw error, just continue without quiz data
         }
     }
 

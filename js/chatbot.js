@@ -2,7 +2,7 @@
 class ChatbotSystem {
     constructor() {
         this.apiKey = 'AIzaSyB2brjGwxLtSz_EqG9eBKBRaxqblRyNwyo';
-        this.apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
+        this.apiUrl = 'https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent';
         this.conversationHistory = [];
         this.isOpen = false;
         this.isTyping = false;

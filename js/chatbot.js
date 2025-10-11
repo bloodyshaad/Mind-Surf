@@ -906,28 +906,36 @@ Use this information to provide personalized, relevant support. Reference their 
         const quizContext = this.getQuizAnalysisContext();
         const fullSystemPrompt = this.systemPrompt + quizContext;
         
-        const messages = [
-            { role: 'user', parts: [{ text: fullSystemPrompt }] },
-            { role: 'model', parts: [{ text: 'I understand. I will be MindBot, a compassionate AI assistant for teens dealing with stress. I will provide supportive, evidence-based guidance while recognizing my limitations and directing users to professional help when needed. I have access to their stress assessment data and will use it to provide personalized support.' }] }
-        ];
+        // Build contents array properly for Gemini API
+        const contents = [];
+        
+        // Add system prompt as first user message and model acknowledgment
+        contents.push({
+            role: 'user',
+            parts: [{ text: fullSystemPrompt }]
+        });
+        contents.push({
+            role: 'model',
+            parts: [{ text: 'I understand. I will be MindBot, a compassionate AI assistant for teens dealing with stress. I will provide supportive, evidence-based guidance while recognizing my limitations and directing users to professional help when needed.' }]
+        });
 
-        // Add recent conversation history (last 5 exchanges)
+        // Add recent conversation history (last 5 exchanges = 10 messages)
         const recentHistory = this.conversationHistory.slice(-10);
         recentHistory.forEach(msg => {
-            messages.push({
+            contents.push({
                 role: msg.role === 'user' ? 'user' : 'model',
                 parts: [{ text: msg.content }]
             });
         });
 
-        // Add current message
-        messages.push({
+        // Add current user message
+        contents.push({
             role: 'user',
             parts: [{ text: userMessage }]
         });
 
         const requestBody = {
-            contents: messages,
+            contents: contents,
             generationConfig: {
                 temperature: 0.7,
                 topK: 40,
@@ -954,36 +962,45 @@ Use this information to provide personalized, relevant support. Reference their 
             ]
         };
 
-        // FIXED: Proper API endpoint construction
         const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${this.apiKey}`;
 
-        const response = await fetch(apiUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(requestBody)
-        });
+        console.log('CHATBOT: Sending request to Gemini API...');
 
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`API request failed: ${response.status} - ${errorText}`);
+        try {
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestBody)
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('CHATBOT: API Error Response:', errorText);
+                throw new Error(`API request failed: ${response.status} - ${errorText}`);
+            }
+
+            const data = await response.json();
+            console.log('CHATBOT: Received response from Gemini API');
+            
+            if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
+                console.error('CHATBOT: Invalid response structure:', data);
+                throw new Error('Invalid API response format');
+            }
+
+            const aiResponse = data.candidates[0].content.parts[0].text;
+
+            // Save to conversation history
+            this.conversationHistory.push({ role: 'user', content: userMessage });
+            this.conversationHistory.push({ role: 'model', content: aiResponse });
+            this.saveConversationHistory();
+
+            return aiResponse;
+        } catch (error) {
+            console.error('CHATBOT: Error in getAIResponse:', error);
+            throw error;
         }
-
-        const data = await response.json();
-        
-        if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
-            throw new Error('Invalid API response format');
-        }
-
-        const aiResponse = data.candidates[0].content.parts[0].text;
-
-        // Save to conversation history
-        this.conversationHistory.push({ role: 'user', content: userMessage });
-        this.conversationHistory.push({ role: 'bot', content: aiResponse });
-        this.saveConversationHistory();
-
-        return aiResponse;
     }
 
     addMessage(content, sender) {

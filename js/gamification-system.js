@@ -190,6 +190,17 @@ class GamificationSystem {
     async awardPoints(points, reason = 'activity') {
         if (!window.authManager?.isAuthenticated()) return;
 
+        const userId = window.authManager.getCurrentUser()?.id;
+        if (!userId) {
+            console.warn('GAMIFICATION: Cannot award points - user ID not available');
+            return { success: false };
+        }
+
+        // Ensure user progress is loaded
+        if (!this.userProgress.user_id) {
+            await this.loadUserProgress();
+        }
+
         const newPoints = this.userProgress.points + points;
         const newLevel = this.calculateLevel(newPoints);
         const leveledUp = newLevel > this.userProgress.level;
@@ -202,7 +213,7 @@ class GamificationSystem {
                     level: newLevel,
                     updated_at: new Date().toISOString()
                 })
-                .eq('user_id', this.userProgress.user_id)
+                .eq('user_id', userId)
                 .select()
                 .single();
 
@@ -211,21 +222,27 @@ class GamificationSystem {
             this.userProgress = data;
 
             // Show notification
-            window.showSuccess(
-                `+${points} points earned!`,
-                leveledUp ? `🎉 Level Up! You're now level ${newLevel}` : 'Points Earned',
-                { duration: 4000 }
-            );
+            if (window.showSuccess) {
+                window.showSuccess(
+                    `+${points} points earned!`,
+                    leveledUp ? `🎉 Level Up! You're now level ${newLevel}` : 'Points Earned',
+                    { duration: 4000 }
+                );
+            }
 
             if (leveledUp) {
                 this.celebrateLevelUp(newLevel);
             }
 
-            window.logSuccess('GAMIFICATION', `Awarded ${points} points for ${reason}`);
+            if (window.logSuccess) {
+                window.logSuccess('GAMIFICATION', `Awarded ${points} points for ${reason}`);
+            }
 
             return { success: true, leveledUp };
         } catch (error) {
-            window.logError('GAMIFICATION', `Failed to award points: ${error.message}`);
+            if (window.logError) {
+                window.logError('GAMIFICATION', `Failed to award points: ${error.message}`);
+            }
             return { success: false };
         }
     }

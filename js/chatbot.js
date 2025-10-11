@@ -962,7 +962,7 @@ Use this information to provide personalized, relevant support. Reference their 
             ]
         };
 
-        const apiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${this.apiKey}`;
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${this.apiKey}`;
 
         console.log('CHATBOT: Sending request to Gemini API...');
 

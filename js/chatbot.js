@@ -33,15 +33,17 @@ Remember: You're a supportive friend, not a therapist. Always encourage professi
     async init() {
         // Only initialize chatbot for authenticated users
         if (!window.authManager?.isAuthenticated()) {
-            window.logInfo('CHATBOT', 'User not authenticated, chatbot disabled');
+            console.log('CHATBOT: User not authenticated, chatbot disabled');
             return;
         }
 
+        console.log('CHATBOT: Initializing chatbot for authenticated user');
         this.loadConversationHistory();
         this.createChatWidget();
         this.setupEventListeners();
         await this.loadUserQuizData();
         this.updateWelcomeMessage();
+        console.log('CHATBOT: Chatbot initialized successfully');
     }
 
     async loadUserQuizData() {
@@ -1227,27 +1229,36 @@ function initializeChatbot() {
 }
 
 // Wait for auth to be ready before initializing chatbot
+function checkAndInitChatbot() {
+    if (window.authManager?.isAuthenticated() && !window.chatbotSystem) {
+        initializeChatbot();
+    }
+}
+
+// Try to initialize on DOM ready
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
-        // Wait a bit for auth to initialize
-        setTimeout(() => {
-            if (window.authManager?.isAuthenticated()) {
-                initializeChatbot();
-            }
-        }, 500);
+        // Check immediately
+        checkAndInitChatbot();
+        // Also check after a delay in case auth is still initializing
+        setTimeout(checkAndInitChatbot, 500);
+        setTimeout(checkAndInitChatbot, 1000);
+        setTimeout(checkAndInitChatbot, 2000);
     });
 } else {
     // DOM already loaded
-    setTimeout(() => {
-        if (window.authManager?.isAuthenticated()) {
-            initializeChatbot();
-        }
-    }, 500);
+    checkAndInitChatbot();
+    setTimeout(checkAndInitChatbot, 500);
+    setTimeout(checkAndInitChatbot, 1000);
+    setTimeout(checkAndInitChatbot, 2000);
 }
 
-// Also listen for auth state changes to initialize chatbot when user logs in
+// Listen for auth state changes to initialize chatbot when user logs in
 window.addEventListener('authStateChanged', (event) => {
     if (event.detail?.authenticated && !window.chatbotSystem) {
-        initializeChatbot();
+        // Small delay to ensure auth is fully ready
+        setTimeout(() => {
+            initializeChatbot();
+        }, 100);
     }
 });
